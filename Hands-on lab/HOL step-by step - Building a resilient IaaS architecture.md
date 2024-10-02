@@ -1,4 +1,4 @@
-![](https://github.com/Microsoft/MCW-Template-Cloud-Workshop/raw/master/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
+![Microsoft Cloud Workshops](https://github.com/Microsoft/MCW-Template-Cloud-Workshop/raw/main/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
 
 <div class="MCWHeader1">
 Building a resilient IaaS architecture
@@ -9,7 +9,7 @@ Hands-on lab step-by-step
 </div>
 
 <div class="MCWHeader3">
-June 2018
+May 2022
 </div>
 
 
@@ -18,7 +18,8 @@ Information in this document, including URL and other Internet Web site referenc
 Microsoft may have patents, patent applications, trademarks, copyrights, or other intellectual property rights covering subject matter in this document. Except as expressly provided in any written license agreement from Microsoft, the furnishing of this document does not give you any license to these patents, trademarks, copyrights, or other intellectual property.
 
 The names of manufacturers, products, or URLs are provided for informational purposes only and Microsoft makes no representations and warranties, either expressed, implied, or statutory, regarding these manufacturers or the use of the products with any Microsoft technologies. The inclusion of a manufacturer or product does not imply endorsement of Microsoft of the manufacturer or product. Links may be provided to third party sites. Such sites are not under the control of Microsoft and Microsoft is not responsible for the contents of any linked site or any link contained in a linked site, or any changes or updates to such sites. Microsoft is not responsible for webcasting or any other form of transmission received from any linked site. Microsoft is providing these links to you only as a convenience, and the inclusion of any link does not imply endorsement of Microsoft of the site or the products contained therein.
-© 2018 Microsoft Corporation. All rights reserved.
+
+© 2022 Microsoft Corporation. All rights reserved.
 
 Microsoft and the trademarks listed at https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/Usage/General.aspx are trademarks of the Microsoft group of companies. All other trademarks are property of their respective owners.
 
@@ -27,908 +28,1490 @@ Microsoft and the trademarks listed at https://www.microsoft.com/en-us/legal/int
 <!-- TOC -->
 
 - [Building a resilient IaaS architecture hands-on lab step-by-step](#building-a-resilient-iaas-architecture-hands-on-lab-step-by-step)
-    - [Abstract and learning objectives](#abstract-and-learning-objectives)
-    - [Overview](#overview)
-    - [Solution architecture](#solution-architecture)
-    - [Requirements](#requirements)
-        - [Help references](#help-references)
-    - [Exercise 1: Prepare connectivity between regions](#exercise-1-prepare-connectivity-between-regions)
-        - [Task 1: Deploy the lab environment](#task-1-deploy-the-lab-environment)
-        - [Task 2: Create a VNET in the second region](#task-2-create-a-vnet-in-the-second-region)
-        - [Task 3: Configure VNET Peering between region](#task-3-configure-vnet-peering-between-region)
-    - [Exercise 2: Build the DCs in for resiliency](#exercise-2-build-the-dcs-in-for-resiliency)
-        - [Task 1: Create Resilient Active Directory Deployment](#task-1-create-resilient-active-directory-deployment)
-        - [Task 2: Create the Active Directory deployment in the second region](#task-2-create-the-active-directory-deployment-in-the-second-region)
-        - [Task 3: Add data disks to Active Directory domain controllers (both regions)](#task-3-add-data-disks-to-active-directory-domain-controllers-both-regions)
-        - [Task 4: Format data disks on DCs and configure DNS settings across connection](#task-4-format-data-disks-on-dcs-and-configure-dns-settings-across-connection)
-        - [Task 5: Promote DCs as additional domain controllers](#task-5-promote-dcs-as-additional-domain-controllers)
-        - [Summary](#summary)
-    - [Exercise 3: Build web tier and SQL for resiliency](#exercise-3-build-web-tier-and-sql-for-resiliency)
-        - [Task 1: Deploy SQL Always-On Cluster](#task-1-deploy-sql-always-on-cluster)
-        - [Task 2: Convert the SQL deployment to Managed Disks](#task-2-convert-the-sql-deployment-to-managed-disks)
-        - [Task 3: Build a scalable and resilient web tier](#task-3-build-a-scalable-and-resilient-web-tier)
-        - [Summary](#summary-1)
-    - [Exercise 4: Configure SQL Server Managed Backup](#exercise-4-configure-sql-server-managed-backup)
-        - [Task 1: Create an Azure Storage Account](#task-1-create-an-azure-storage-account)
-        - [Task 2: Configure managed backup in SQL Server](#task-2-configure-managed-backup-in-sql-server)
-    - [Exercise 5: Validate resiliency](#exercise-5-validate-resiliency)
-        - [Task 1: Validate resiliency for the CloudShop application](#task-1-validate-resiliency-for-the-cloudshop-application)
-        - [Task 2: Validate SQL Always On](#task-2-validate-sql-always-on)
-        - [Task 3: Validate backups are taken](#task-3-validate-backups-are-taken)
-    - [After the hands-on lab](#after-the-hands-on-lab)
-        - [Task 1: Delete the resource groups created](#task-1-delete-the-resource-groups-created)
+  - [Abstract and learning objectives](#abstract-and-learning-objectives)
+  - [Overview](#overview)
+  - [Solution architecture](#solution-architecture)
+  - [Requirements](#requirements)
+    - [Help references](#help-references)
+  - [Exercise 1: Enable High Availability for the Contoso application](#exercise-1-enable-high-availability-for-the-contoso-application)
+    - [Task 1: Deploy HA resources](#task-1-deploy-ha-resources)
+    - [Task 2: Configure HA for the Domain Controller tier](#task-2-configure-ha-for-the-domain-controller-tier)
+    - [Task 3: Configure HA for the SQL Server tier](#task-3-configure-ha-for-the-sql-server-tier)
+    - [Task 4: Configure HA for the Web tier](#task-4-configure-ha-for-the-web-tier)
+  - [Exercise 2: Enable Disaster Recovery for the Contoso application](#exercise-2-enable-disaster-recovery-for-the-contoso-application)
+    - [Task 1: Deploy DR resources](#task-1-deploy-dr-resources)
+    - [Task 2: Inspect DR for the Domain Controller tier](#task-2-inspect-dr-for-the-domain-controller-tier)
+    - [Task 3: Configure DR for the SQL Server tier](#task-3-configure-dr-for-the-sql-server-tier)
+    - [Task 4: Configure DR for the Web tier](#task-4-configure-dr-for-the-web-tier)
+    - [Task 5: Configure a public endpoint using Azure Front Door](#task-5-configure-a-public-endpoint-using-azure-front-door)
+  - [Exercise 3: Enable Backup for the Contoso application](#exercise-3-enable-backup-for-the-contoso-application)
+    - [Task 1: Create the Azure Backup resources](#task-1-create-the-azure-backup-resources)
+    - [Task 2: Enable Backup for the Web tier](#task-2-enable-backup-for-the-web-tier)
+    - [Task 3: Enable Backup for the SQL Server tier](#task-3-enable-backup-for-the-sql-server-tier)
+  - [Exercise 4: Validate resiliency](#exercise-4-validate-resiliency)
+    - [Task 1: Validate High Availability](#task-1-validate-high-availability)
+    - [Task 2: Validate Disaster Recovery - Failover IaaS region to region](#task-2-validate-disaster-recovery---failover-iaas-region-to-region)
+    - [Task 3: Validate Disaster Recovery - Failback IaaS region to region](#task-3-validate-disaster-recovery---failback-iaas-region-to-region)
+    - [Task 4: Validate VM Backup](#task-4-validate-vm-backup)
+    - [Task 5: Validate SQL Backup](#task-5-validate-sql-backup)
+  - [After the hands-on lab](#after-the-hands-on-lab)
+    - [Task 1: Delete the lab resources](#task-1-delete-the-lab-resources)
 
 <!-- /TOC -->
 
-# Building a resilient IaaS architecture hands-on lab step-by-step 
+# Building a resilient IaaS architecture hands-on lab step-by-step
 
-## Abstract and learning objectives 
+## Abstract and learning objectives
 
-In this hands-on lab, you will deploy a pre-configured IaaS environment and then redesign and update it to account for resiliency and in general high availability. Throughout the hands-on lab you will use various configuration options and services to help build a resilient architecture. 
+In this hands-on lab, you will deploy a pre-configured IaaS environment and then redesign and update it to account for resiliency and high availability. Throughout the hands-on lab, you will use various configuration options and services to help build a resilient architecture.
 
-At the end of this workshop, you will be better able to design and use the following services:
-
-
--   The use of availability sets
-
--   The use of Managed Disks
-
--   Design principles when provisioning storage to VMs
-
--   Effective employment of Azure Backup to provide point-in-time recovery
-
--   SQL Server Always On Availability Groups 
-
+At the end of the lab, you will be better able to design and use availability zones, SQL Server Always On Availability Groups, Azure Site Recovery, Azure Backup, and Azure Front Door to implement a fully resilient IaaS application. The training includes content on high availability, disaster recovery, as well as knowledge of how to back up the databases and virtual machines.
 
 ## Overview
 
-Contoso has asked you to deploy their infrastructure in a resilient manner to insure their infrastructure will be available for their users and gain an SLA from Microsoft.
+Contoso has asked you to deploy their infrastructure in a resilient manner to ensure their infrastructure will be available for their users and gain an SLA from Microsoft.
 
 ## Solution architecture
 
-Highly resilient deployment of Active Directory Domain Controllers in Azure.
-    ![Highly resilient deployment of Active Directory Domain Controllers in Azure.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image2.png "Solution architecture")
+The following diagram shows the highly resilient application architecture you will build in this lab. Starting with just WebVM1, SQLVM1 and DCVM1, you will first build out a fully-redundant, high-availability environment in Central US. You will then extend this environment to a disaster recovery site in East US 2 and add a backup solution for both the web tier and database tier.
 
-Deployment of a web app using scale sets, and a highly available SQL Always On deployment.
-    ![Deployment of a web app using scale sets, and a highly available SQL Always On deployment.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image3.png "Solution architecture")
+![Diagram showing the DR design for the Ordering application. Two sites, Central US and East US, each show the application footprint, each with web VMs, SQL VMs, and domain controller VMs separated into availability zones within each site. Failover for the web VMs is shown using Azure Site Recovery. Failover for the SQL VMs is shown via SQL Server asynchronous replication. The Domain Controller VMs are running active-active.](images/solution-dr2.png "Solution architecture")
+
 
 ## Requirements
 
-1.  Microsoft Azure Subscription
-
-2.  Virtual Machine Built during this hands-on lab or local machine with the following:
-
-    a.  Visual Studio 2017 Community or Enterprise Edition
-
-    b.  Latest Azure PowerShell Cmdlets
-
-    c.  <https://azure.microsoft.com/en-us/downloads/>
-
-    d.  Ensure you reboot after installing the SDK or Azure PowerShell will not work correctly
+Complete the steps given in the [Before the HOL - Building a resilient IaaS architecture](https://github.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/blob/master/Hands-on%20lab/Before%20the%20HOL%20-%20Building%20a%20resilient%20IaaS%20architecture.md) guide before starting this lab.
 
 ### Help references
 |    |            |
 |----------|:-------------:|
 | **Description** | **Links** |
-| Authoring ARM Templates | <https://azure.microsoft.com/en-us/documentation/articles/resource-group-authoring-templates/> |
-| Virtual Machine Scale Set Samples | <https://github.com/gbowerman/azure-myriad> |
-| Azure Quick Start Templates | <https://github.com/Azure/azure-quickstart-templates> |
-| Network Security Groups | <https://azure.microsoft.com/en-us/documentation/articles/virtual-networks-nsg/> |
-| Managed Disks | <https://azure.microsoft.com/en-us/services/managed-disks> |
-| Always-On Availability Groups | <https://docs.microsoft.com/en-us/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server?view=sql-server-2017> |
-| SQL Server Managed Backup to Azure | <https://docs.microsoft.com/en-us/sql/relational-databases/backup-restore/sql-server-managed-backup-to-microsoft-azure?view=sql-server-2017> |
-| Virtual Network Peering | <https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview> |
-| Azure Backup |  <https://azure.microsoft.com/en-us/services/backup/> |
-
-
-## Exercise 1: Prepare connectivity between regions
-
-Duration: 30 minutes
-
-Contoso is planning to deploy infrastructure in multiple regions in Azure to provide infrastructure closer to their employees in each region as well as the ability to provide additional resiliency in the future for certain workloads. In this exercise, you will configure connectivity between the two regions.
-
-### Task 1: Deploy the lab environment
-
-1.  Login to the Azure portal (<https://portal.azure.com>) with the credentials that you want to deploy the lab environment to
-
-2.  In a separate tab, navigate to: <https://github.com/opsgility/cw-building-resilient-iaas-architecture>
-
-3.  Click the button **Deploy to Azure**
-
-    ![A screen with the Deploy to Azure button visible.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image24.png "Sample Application in GitHub")
-
-4.  Specify the Resource group name as **ContosoRG** and the region as **West Central US**, **check the two check boxes** on the page and click **Purchase**
-
-    ![The custom deployment screen with ContosoRG as the resource group and West Central US as the region.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image25.png "Custom deployment")
-
-5.  Once the deployment is successful, validate the deployment by opening the **CloudShopWeb** virtual machine and navigating your browser to its public IP address
-
-    ![The CloudShopDemo window displays. Under Select a product from the list, a product list displays.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image27.png "CloudShopDemo window")
-
-### Task 2: Create a VNET in the second region
-
-1.  Browse to the Azure portal and authenticate at <https://portal.azure.com/>
-
-2.  In the left pane, click **+ Create Resource**
-
-3.  In the **New** blade, select **Networking \>** **Virtual Network**
-
-    ![In the New Blade, under Azure Marketplace, Networking is selected. Under Featured, Virtual Network is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image28.png "New Blade")
-
-4.  For the **Create virtual network** settings, enter the following information:
-
-    -   Name: **VNET2**
-
-    -   Address space: **172.16.0.0/16**
-
-    -   Subnet name: **Apps**
-
-    -   Subnet address range: **172.16.0.0/24**
-
-    -   Subscription: **Choose your subscription**
-
-    -   Resource group: **Create new -- WUS2RG**
-
-    -   Location: **West US 2**
-
-    -   Pin to dashboard: **Check the checkbox**
-
-    -   Click the **Create** button to continue
-
-        ![A blade showing the creation of a virtual network in the Azure portal. ](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image29.png "Create virtual network")
-
-5.  Once the deployment is complete, add two more subnets to the virtual network. To do this, select the **Subnets \>** icon in the **Settings** area.\
-    ![Under Settings, Subnets is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image30.png "Settings section")
-
-6.  Click the **+ Subnet** option, and enter the following settings:
-
-    ![Screenshot of the Subnets button.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image31.png "Subnets button")
-
-    -   Name: **Data**
-
-    -   Address range (CIDR block): **172.16.1.0/24**
-
-    -   Click the **OK** button to add this subnet:
-
-        ![In the Add subnet blade, the Name field is set to Data, and Add range (CIDR block) is set to 172.16.1.0/24.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image32.png "Add subnet blade")
-
-7.  Once the subnet is created successfully, repeat the above step for an **Identity** subnet with the following settings:
-
-    -   Name: **Identity**
-
-    -   Address range (CIDR block): **172.16.2.0/24**
-
-    -   Click the **OK** button to add this subnet:
-
-        ![In the Add subnet blade, the Name field is set to Identity, and Add range (CIDR block) is set to 172.16.2.0/24.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image33.png "Add subnet blade")
-
-8.  The subnets will look like this once complete:
-
-    ![The following subnets display: Apps, Data, and Identity.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image34.png "Subnets")
-
-### Task 3: Configure VNET Peering between region
-
-1.  Open the first virtual network (VNET1) by clicking **All Services -\> Virtual networks** and clicking the name
-
-2.  Click on **Peerings** and click **+Add**
-
-    ![A screen highlighting the peerings link in the Azure portal.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image35.png "Peerings")
-
-3.  Name the peering, **VNET1TOVNET2** and change the Virtual network dropdown to **VNET2** click **Allow forwarded traffic,** and then click **OK**
-
-    ![A screen that shows the name Peering, the virtual network VNET2, and Allow forwarded traffic checked.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image36.png "Add peering")
-
-4.  Open the second virtual network (LitewareVNET2) by clicking **All Services -\> Virtual networks** and clicking the name
-
-5.  Click on **Peerings** and click **+Add**
-
-    ![A screen highlighting the peerings link in the Azure portal.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image35.png "Peerings")
-
-6.  Name the peering, **VNET2TOVNET1** and change the Virtual network dropdown to **VNET1** click **Allow forwarded traffic,** and then click **OK**
-
-    ![A screen that shows the name Peering, the virtual network VNET, and Allow forwarded traffic checked.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image37.png "Add peering")
-
-## Exercise 2: Build the DCs in for resiliency
-
-Duration: 30 minutes
-
-In this exercise, you will deploy Windows Server Active Directory configured for resiliency using Azure Managed Disks and Availability Sets in the primary region. You will then deploy additional domain controllers in a second region for future expansion of the Azure footprint.
-
-### Task 1: Create Resilient Active Directory Deployment 
-
-In this task, you will change the disk cache settings on the existing domain controller **Read Only** to avoid corruption of Active Directory database.
-
-1.  Select **Virtual machines** in the left menu pane of the Azure portal
-
-2.  Click on **ADVM**, and in the **Settings** area, select **Disks**
-
-    ![Under Settings, Disks is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image38.png "Settings section")
-
-3.  On the Disks blade, click **Edit**
-
-    ![On the Disks blade, the Edit icon is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image39.png "Disks blade")
-
-4.  Change the **Host caching** from **Read/Write** to **None** via the drop-down option, and click the **Save** icon
-
-    ![In the Edit blade, under Host Caching, None is selected. At the top, the Save button is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image40.png "Edit blade")
-
-**Note**: In production, we would not want to have any OS drives that do not have read/write cache enabled. This machine will be decommissioned, but first, we want to make sure the AD Database and SYSVOL will not be corrupted during our updates.
-
-5.  In the left pane, click **+ Create Resource**
-
-6.  In the **New** blade, select **Compute** **\>** **Windows Server 2016**
-
-    ![In the New blade, under Azure Marketplace, Compute is selected. Under Featured, Windows Server 2016 Datacenter is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image41.png "New blade")
-
-7.  In the **Create virtual machine** blade, enter the **Basics** information:
-
-    -   Name: **DC01**
-
-    -   VM disk type: **SSD**
-
-    -   Username: **demouser**
-
-    -   Password: **demo\@pass123**
-
-    -   Confirm password: **demo\@pass123**
-
-    -   Subscription: **Select your subscription**
-
-    -   Resource group: **Create New - ADRG**
-
-    -   Location: **West Central US**
-
-    -   Click the **OK** button to continue
-
-        ![A screen that shows the basics blade of creating a new VM. The name is DC01, the user name is demouser, the resource group is ADRG, and the location is West Central US.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image42.png "Basics")
-
-8.  For the **Size**, select **DS1\_V2**. You may have to select the **View All** option if it is not one of the recommended sizes.
-
-9.  In the **Settings** options, choose the following configuration:
-
-    -   Storage Use Managed Disks: **Yes**
-
-    -   Virtual Network: **Click the name to choose VNET1**
-
-    -   Subnet: **Choose Identity as the subnet**
-
-    -   Availability set: **Create new, ADAV**
-
-    -   Auto-shutdown: **Off**
-
-    -   Guest OS Diagnostics: **Enabled**
-
-    -   Backup: **Enabled**
-
-    -   Recovery Services Vault: **Create New -\> BackupVault**
-
-    -   Resource Group: **BackupVaultRG**
-
-    -   Leave all other settings: **Default**
-
-    -   Then, click the **OK** button to continue to the **Summary**
-
-    > **Note**: Backup with a Domain Controller is a supported scenario. Care should be taken on restore. For more information see the following: <https://docs.microsoft.com/en-us/azure/backup/backup-azure-arm-restore-vms#backup-for-restored-vms>
-
-
-    There will be a final validation and when this is passed, click the **Create** button to complete the deployment.
-
-10. Give the deployment a few minutes to build the Availability Set resource. Then, repeat those steps to create **DC02**, as that will be another Domain Controller making sure to place it in the **ADAV** availability set and the existing **BackupVault**.
-
-### Task 2: Create the Active Directory deployment in the second region
-
-In this task, you will deploy Active Directory in the second region, so identity is available for new workloads.
-
-1.  In the left pane, click **+ Create Resource**
-
-2.  In the **New** blade, select **Virtual Machines \>** **Windows Server 2016 Datacenter**
-
-    ![In the New blade, under Azure Marketplace, Compute is selected. Under Featured, Windows Server 2016 Datacenter is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image41.png "New blade")
-
-3.  In the **Create virtual machine** blade, enter the **Basics** information:
-
-    -   Name: **DC03**
-
-    -   VM disk type: **SSD**
-
-    -   Username: **demouser**
-
-    -   Password: **demo\@pass123**
-
-    -   Confirm password: **demo\@pass123**
-
-    -   Subscription: **Select your subscription**
-
-    -   Resource group: **WUS2ADRG**
-
-    -   Location: **West US 2**
-
-    -   Click the **OK** button to continue
-
-        ![In this screen, the DC03 VM is being configured with demouser as the username, and the resource group is set to WUS2ADRG and the location is West US 2.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image45.png "Basics blade")
-
-4.  For the **Size**, select **Standard DS1 V2**. You may have to select the **View All** option if it is not one of the recommended sizes.
-
-5.  Click the **Select** button to continue to **Settings**
-
-6.  In the **Settings** options, choose the following configuration:
-
-    -   Storage Use Managed Disks: **Yes**
-
-    -   Virtual Network: **Click the name to choose VNET2**
-
-    -   Subnet: **Choose Identity as the subnet**
-
-    -   Availability set: **Create new, ADAV2**
-
-    -   Auto-shutdown: **Off**
-
-    -   Guest OS Diagnostics: **Enabled**
-
-    -   Backup: **Enabled**
-
-    -   Recovery Services Vault: **Create New -\> BackupVault2**
-
-    -   Resource Group: **Create New -\> BackupVault2RG**
-
-    -   Leave all other settings: **Default**
-
-    -   Then, click the **OK** button to continue to the **Summary**
-
-7.  There will be a final validation. When this is passed, click the **Create** button to complete the deployment.
-
-8. Give the deployment a few minutes to build the Availability Set resource. Then, repeat those steps to create **DC04**, as that will be another Domain Controller making sure to place it in the **ADAV2** availability set and the existing **BackupVault2**.
-
-### Task 3: Add data disks to Active Directory domain controllers (both regions)
-
-1.  Open **DC01** from the Azure portal
-
-2.  In the **Settings** blade, select **Disks**
-
-3.  Click on **Add data disk**
-
-    ![The + Add data disk button is visible.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image48.png "Data disks")
-
-4.  On the settings for the **Data disk menu**, click on the drop-down menu under **Name**, and click **Create Disk**
-
-    ![Under Data disks, under Name, Create disk is selected from the drop-down list.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image49.png "Data disks section")
-
-5.  On the Create managed disk blade, enter the following, and click **Create**:
-
-    -   Name: **DC01-Data-Disk-1**
-
-    -   Resource group: **Use existing / ADRG**
-
-    -   Account Type: **Premium (SSD)**
-
-    -   Source Type: **None (empty disk)**
-
-    -   Size: **32**
-
-
-6.  Once the disk is created, the portal will move back to the **Disks** blade. Locate the new disk under **Data Disks**, change the **HOST CACHING** to **None**, and click **Save**.
-
-    ![On the Disks blade, under Host Caching, None is selected. At the top, Save is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image51.png "Disks blade")
-
-7.  Perform these same steps for **DC02** naming the disk **DC02-Data-Disk-1**. Also, make sure the Host caching is set to **None**.
-
-8.  Perform Steps 1-4 for **DC03** and **DC04** naming the disks **DC03-Data-Disk-1** and **DC04-Data-Disk1** respectively. Make sure to set the Host caching to **None**.
-
-### Task 4: Format data disks on DCs and configure DNS settings across connection
-
-1.  Click on **DC01** on the Azure dashboard
-
-2.  Click the **Connect** icon on the menu bar to RDP into the server
-
-    ![Screenshot of the Connect icon.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image52.png "Connect icon")
-
-3.  Login to the VM with **demouser** and password created during deployment
-
-    ![On the Windows security login window, the Use a different account option is circled.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image53.png "Windows security login window")
-
-    > **Note**: You might have to click "Use a different account," depending on which OS you are connecting from to put in the demouser credentials.
-
-4.  Click **Yes** to continue to connect to DC01
-
-5.  Once the logged in, click on **File and Storage Services** in **Server Manager**
-
-    ![In Server Manager, File and Storage services is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image55.png "Server Manager ")
-
-6.  Click on **Disks**, and let the data load. You should now see an **Unknown** partition disk in the list.
-
-    ![In the Disks section, under DC01, the Unknown partition disk is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image56.png "Disks section")
-
-7.  Right-click on this disk and choose **New Volume...** from the context menu options
-
-    ![The Right-click menu for the Unknown partition disk, New Volume is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image57.png "Right-click menu")
-
-8.  Follow the prompts in the **New Volume Wizard** to format this disk, as the **F:\\** drive for the domain controller
-
-9.  Perform these same steps for the remaining 3 DCs (**DC02**, **DC03**, and **DC04**)
-
-10. Go back to the Azure portal dashboard and click on **DC01**. Next, click on **Networking** followed by the name of the NIC.
-
-    ![Under Settings, Networking is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image58.png "Settings section")
-
-    ![Next to Network Interface, dc01222 is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image59.png "Network Interface")
-
-11. Select the **IP** **configurations**
-
-    ![Under Settings, IP configurations is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image60.png "Settings section")
-
-12. Click the IP Configuration named **ipconfig1**
-
-    ![In the IP Configuration blade, under Name, ipconfig1 is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image61.png "IP Configuration blade")
-
-13. On the **ipconfig1** blade, change the **Private IP address settings** to **Static.** Leave all the other settings at their defaults and click the **Save** icon.
-
-14. Once Azure notifies the network interface change is saved, repeat these steps on the remaining 3 DCs (**DC02**, **DC03**, and **DC04**)
-
-    > **Note**: Static IP for DC02 should be 10.0.2.6. DC03 should be 172.16.2.4 and DC04 should be 172.16.2.5.
-
-15. In the Azure portal, click **More Services \>** and in the filter, type in **Virtual Networks**. Select **VNET2** from the list.
-
-16. In the **Settings** area, select **DNS Servers**
-
-    ![Under Settings, DNS servers is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image63.png "Settings section")
-
-17. Change **DNS servers** to **Custom**, and provide the address of **10.0.2.4** in the **Primary DNS server** box. Click the **Save** icon to commit the changes.
-
-    ![In the DNS Servers blade, under DNS servers, the Custom radio button is selected, and the field below it is set to 10.0.2.4. ](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image64.png "DNS Servers blade")
-
-18. At this point, restart **DC03** and **DC04**, so they can get their new DNS Settings
-
-    > **Note**: DC01 and DC02 received the correct DNS settings from the VNET DNS configured prior to their deployment, as the Customer DNS was set before the hands-on lab for that VNET. DC03 and DC04 must be rebooted to receive the updated DNS settings from their virtual network.
-
-19. While these two DCs are rebooting, RDP into **ADVM**, and run the following PowerShell command:
-
-    ```
-    Set-DnsServerPrimaryZone -Name contoso.com -DynamicUpdate NonsecureAndSecure 
-    ```
-
-    > **Note**: This would not be done in a production environment, but for purposes of our hands-on lab, we need to perform this step for the SQL Cluster in the coming tasks.
-
-20. After the PowerShell command runs, Sign Out of **ADDC**
-
-### Task 5: Promote DCs as additional domain controllers 
-
-1.  Login to **LABVM** created before the hands-on lab or the machine where you have downloaded the exercise files
-
-2.  Browse to the Azure portal and authenticate at <https://portal.azure.com/>
-
-3.  Click on **DC01** on the Azure dashboard
-
-4.  In the **Settings** area, click **Extensions**
-
-    ![Under Settings, Extensions is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image65.png "Settings section")
-
-5.  Click the **+ Add** icon
-
-    ![Screenshot of the Add icon.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image66.png "Add icon")
-
-6.  Choose **Custom Script Extension** by Microsoft Corp., and click the **Create** button to continue
-
-    ![The Custom Script Extention option displays.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image67.png "Custom Script Extention option")
-
-7.  Browse to the **C:\\HOL** folder and select the **AddDC.ps1** script by clicking the folder icon for **Script file (Required)**. Then, click the **OK** button to continue.
-
-    ![The Script file field is set to AddDC.ps1, and the OK button is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image68.png "Script section")
-
-8.  This script will run the commands to add this DC to the domain as an additional DC in the contoso.com domain. Repeat these steps for **DC02**, **DC03**, and **DC04**.
-
-9.  Once this succeeds, you will see a **Provisioning succeeded** message under **Extensions** for all four domain controllers
-
-    ![In the Extensions blade, the status for CustomScriptExtensions is Provisioning succeeded.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image69.png "Extensions blade")
-
-    > **Note**: While this a live production environment, there would need to be some additional steps to clean up Region 1 and to configure DNS, Sites and Services, Subnets, etc. Please refer to documentation on running Active Directory Virtualized or in Azure for details. ADDC should be demoted gracefully, and if required, a new DC can be added to the ADAVSet and data disk attached for F:\\.
-
-10. Open the settings for VNET2 in the Azure portal. Under DNS servers, add the two new domain controller IP addresses and click **Save**
-
-    ![A screen that shows setting the IP addresses for the two new DNS servers on the virtual network.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image70.png "DNS servers")
-
-### Summary
-
-In this exercise, you will deploy Windows Server Active Directory configured for resiliency using Azure Managed Disks and Availability Sets in the primary and the failover region.
-
-## Exercise 3: Build web tier and SQL for resiliency
+| Azure Resiliency Overview | <https://azure.microsoft.com/features/resiliency/> |
+| Always-On Availability Groups | <https://docs.microsoft.com/sql/database-engine/availability-groups/windows/overview-of-always-on-availability-groups-sql-server?view=sql-server-2017> |
+| SQL Server Backup in Azure VMs | <https://docs.microsoft.com/azure/backup/backup-azure-sql-database> |
+| Azure Backup |  <https://azure.microsoft.com/services/backup/> |
+| Azure Site Recovery | https://docs.microsoft.com/en-us/azure/site-recovery/ |
+| | |
+
+## Exercise 1: Enable High Availability for the Contoso application
 
 Duration: 60 minutes
 
-In this exercise, you will deploy resilient web servers using VM scale sets and a SQL Always-On Cluster for resiliency at the data tier.
+The Contoso application has been deployed to the Central US region. This initial deployment does not have any redundancy - it uses a single web VM, a single database VM, and a single domain controller VM.
 
-### Task 1: Deploy SQL Always-On Cluster 
+In this exercise, you will convert this deployment into a highly-availability architecture by adding redundancy to each tier.
 
-In this task, you will deploy a SQL Always-On cluster using an ARM template that deploys to your existing Virtual Network and Active Directory infrastructure.
+### Task 1: Deploy HA resources
 
-1.  Navigate to <https://github.com/opsgility/cw-building-resilient-iaas-architecture-sql> and click the **Deploy to Azure Button**
+In this task, you will deploy additional web, database, and domain controller VMs.
 
-    ![The Deploy to Azure button is highlighted for deploying a sample from GitHub.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image71.png "Sample page")
+A template will be used to save time. You will configure each tier in subsequent exercises in this lab.
 
-2.  Specify the resource group name as **CloudShopRG** and ensure the region is set to **West Central US**
+1. Select the **Deploy to Azure** button below to open the Azure portal and launch the template deployment for the additional infrastructure components that will be used to enable high availability for the Contoso application. Log in to the Azure portal using your subscription credentials.
 
-    ![The custom deployment blade is displayed with CloudShopRG as the resource group and West Cental US as the location.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image72.png "Custom deployment")
+    [![Button to deploy the Contoso High Availability resource template to Azure.](https://aka.ms/deploytoazurebutton "Deploy the Contoso HA resources to Azure")](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2FMCW-Building-a-resilient-IaaS-architecture%2Fmaster%2FHands-on%20lab%2FResources%2Ftemplates%2Fcontoso-iaas-ha.json)
 
-3.  Check the two checkboxes for agreeing to terms and conditions and Pin to Dashboard and click Purchase to start the deployment
+2. Complete the Custom deployment blade as follows:
 
-    ![A screen with the checkboxes for I agree to the terms and conditions and Pin to dashboard checked and the purchase button highlighted.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image73.png "Terms and Conditions")
+    - Resource Group: **ContosoRG1** (existing)
+    - Location: Location close to you. This will be your primary location.
 
-4.  Wait until the template deployment is complete before continuing
+    Select **Review + Create** and then **Create** to deploy resources.
 
-5.  Open a remote desktop connection to the **SQLVM-1** virtual machine you created in the previous task, and login using the **contoso\\demouser** account with the password demo@pass123
+    ![The custom deployment screen with ContosoRG1 as the resource group.](images/ha-deploy1.png "Custom deployment")
 
-    ![Screenshot of the Connect icon.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image52.png "Connect icon")
+3. While you wait for the HA resources to deploy, review the template contents. You can review the template by navigating to the **ContosoRG1** resource group, selecting **Deployments** in the resource group left-nav, and selecting any of the deployments, followed by **template**.
 
-6.  Once connected, open the Windows Explorer, check to make sure the F:\\ Drive is present, and the Database was restored to the F:\\Data directory
+    ![Screenshot of the Azure portal showing the HA template contents.](images/ha-template.png "Screenshot of the Azure portal showing the HA template contents.")
 
-7.  Next, run this command from **SQLVM-1** to create a Cluster for the SQL Always-On Group. **Start \> PowerShell \> Enter**, and execute the following commands:
+    The template contains five child templates, containing the various resources required for:
 
-```
-    New-Cluster -Name CLUST-1 -Node SQLVM-1,SQLVM-2,WITNESSVM -StaticAddress 10.0.1.8 
-```
+    - The ADVM2 virtual machine, which will be a second Domain Controller.
+    - The SQLVM2 virtual machine, which will be a second SQL Server.
+    - The WebVM2 virtual machine, which will be a second web server.
+    - Two load balancers, one for the web tier and one for the SQL tier.
+    - The virtual network with the proper DNS configuration in place.
 
-8.  This will create a three-node cluster with a static IP address. It is also possible to use a wizard for this task, but the resulting cluster will require additional configuration to set the static IP address to be viable in Azure. This is due to the way Azure DHCP distributes IP addresses causing the cluster to receive the same IP address as the node it is executing on resulting in a duplicate IP address and failure of the cluster service.
+4. You can check the HA resource deployment status by navigating to the **ContosoRG1** resource group, selecting **Deployments** in the resource group left-nav, and checking the status of the deployments. Make sure the deployment status is **Succeeded** for all templates before proceeding to the next task.
 
-    ![In the Administrator: Windows PowerShell window, PowerShell commands display. At this time, we are unable to capture all of the information in the window. Future versions of this course should address this.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image75.png "Administrator: Windows PowerShell window")
+    ![Screenshot of the Azure portal showing the template deployment status 'Succeeded' for each template.](images/ha-success.png "Screenshot of the Azure portal showing the template deployment status Succeeded for each template")
 
-9.  Once the PowerShell command has completed, open the **Failover Cluster Manager**, expand the **CLUS-1** cluster, select Nodes, validate all nodes are online and Assigned Vote and Current Vote are listed as "1" for all nodes of the cluster
 
-    ![In Failover Cluster Manager, in the Nodes pane, three Nodes display: SQLVM-1, SQLVM-2, and Witness VM. Their Assigned Votes and Current votes are all 1.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image76.png "Failover Cluster Manager")
+### Task 2: Configure HA for the Domain Controller tier
 
-10. Launch **SQL Server 2016 Configuration Manager** on **SQLVM-1**
+In this task, you will reboot all the virtual machines to ensure they receive the updated DNS settings.
 
-    ![SQL Server 2016 Configuration Manager is typed in the search field, and below, SQL Server 2016 Configuration Manager is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image77.png "Search field and results")
+When using a domain controller VM in Azure, other VMs in the virtual network must be configured to use the domain controller as their DNS server. This is achieved with the DNS settings in the virtual network. These settings are then picked up by the VMs when they reboot or renew their DHCP lease.
 
-11. Click **SQL Server Services**, right-click **SQL Server (MSSQLSERVER)**, and select **Properties**
+The initial deployment included a first domain controller VM, **ADVM1**, with static private IP address **10.0.3.100**. The initial deployment also configured this IP address in the VNet DNS settings.
 
-    ![In SQL Server 2016 Configuration Manager, in the left pane, under SQL Server Configuration Manager (Local), SQL Server Services is selected. In the right pane, under Name, SQL Server (MSSQLSERVER) is selected, and Properties is selected from its right-click menu.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image78.png "SQL Server 2016 Configuration Manager")
+The HA resources template has added a second domain controller, **ADVM2**.  The static private IP address should be **10.0.3.101**. This server has already been promoted to be a domain controller using a CustomScriptExtension (you can review this script if you like, you'll find it linked from the ADVM2 deployment template). The template also updated the DNS setting on the virtual network to include the IP address of the second domain controller.
 
-12. Select the **AlwaysOn High Availability** tab, check the box for **Enable AlwaysOn Availability Groups**, click **Apply**, and click **OK** on the message that changes will not take effect until after the server is restarted
+In this task, you will reboot all the servers to ensure they have the latest DNS settings.
 
-    ![In the SQL Server (MSSQLSERVER) Properties dialog box, on the AlwaysOn High Availability tab, the Enable AlwaysOn Availability Groups checkbox is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image79.png "SQL Server (MSSQLSERVER) Properties dialog box")
+1. Restart the **ADVM1** and **ADVM2** virtual machines in the **ContosoRG1** resource group, so they pick up the new DNS server settings.
 
-13. On the **Log On** tab, change the service account to **contoso\\demouser** using **demo\@pass123** for the password. Click **OK** to accept the changes, and click **Yes** to confirm the restart of the server.
+2. Wait for a minute or two for the domain controller VMs to boot fully, then restart the **WebVM1**, **WebVM2**, **SQLVM1**, and **SQLVM2** virtual machines, so they also pick up the new DNS server settings.
 
-    ![In the SQL Server (MSSQLSERVER) Properties dialog box, on the Log On tab, in the Account Name field, contoso\\demouser is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image80.png "SQL Server (MSSQLSERVER) Properties dialog box")
+### Task 3: Configure HA for the SQL Server tier
 
-    ![On the Confirm Account Change pop-up, the Yes button is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image81.png "Confirm Account Change pop-up")
+In this task, you will build a Windows Failover Cluster and configure SQL Always On Availability Groups to create a high-availability database tier.
 
-14. Minimize the RDP Window for **SQLVM-1**
+1. From the Azure portal home page, select **+ Create a resource**. Select **Storage account**.
 
-15. From the Azure portal, locate **SQLVM-2**, and click **Connect.** Make sure to Sign On using the **contoso\\demouser** domain account.
+2. Complete the **Create storage account** form using the following details:
 
-    ![On the Windows Security login page, the contoso\\demouser credentials are called out.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image82.png "Windows Security login page")
+    - **Resource group**: Use existing / ContosoRG1
+    - **Storage account name**: Unique name starting with `contososqlwitness`
+    - **Location**: Any location in your area that is **NOT** your Primary or Secondary site, for example **West US 3**.
+    - **Performance**: Standard
+    - **Replication**: Zone-redundant storage (ZRS)
+    - **Access tier (default)**: Hot
 
-16. From the RPD Session on **SQLVM-2**, repeat steps to configure **AlwaysOn High Availability** and **Log On** using SQL 2016 Configuration Manager
+    ![Fields in the Create storage account blade are set to the previously defined settings.](images/ha-storage.png "Create storage account blade")
 
-17. Move back to RDP session with **SQLVM-1**
+3. Switch to the **Advanced** tab. Change the **Minimum TLS version** to **Version 1.0**. Then select **Review + Create**, followed by **Create**.
 
-18. Launch **SQL Server 2016 Management Studio**, and connect to the local instance of SQL Server
+    ![The 'Advanced' tab of the Create storage account blade shows the minimum TLS version as 1.0.](images/ha-tls.png)
 
-    ![Screenshot of the Microsoft SQL Server Management Studio option.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image83.png "Microsoft SQL Server Management Studio")
+    > **Note**: To promote the use of the latest and most secure standards, by default, Azure storage accounts require TLS version 1.2. This storage account will be used as a Cloud Witness for our SQL Server cluster. SQL Server requires TLS version 1.0 for the Cloud Witness.
 
-19. Click **Connect** to login to SQL Server
+4. Once the storage account is created, navigate to the storage account blade. Select **Access keys** under **Security + networking**. Toggle the **Show/Hide keys button** (Shown as hide keys in the screenshot), copy the **storage account name** and the **first access key**, and paste them into your text editor of choice - you will need these values later.
 
-    ![The Connect to Server dialog box displays.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image84.png "Connect to Server dialog box")
+    ![In the Storage account Access keys section, the Storage account name and key1 are called out.](images/ha-storagekey.png "Storage account section")
 
-    > **Note**: Availability Groups require that the databases be in full recovery mode and that an initial backup has been taken. If you deployed via the ARM template this will be done for you.
+5. Return to the Azure portal and navigate to the **ContosoSQLLBPrimary** load balancer blade. Select **Backend pools** and open **BackEndPool1**.
 
-20. Minimize your **SQLVM-1** RDP Session and then Copy from your **LABVM** the file **C:\\HOL\\CreateAGRegion1.sql** and then back on **SQLVM-1** paste it into the **C:\\SQDATA** directory
+    ![Azure portal showing path to BackEndPool1 on ContosoSQLLBPrimary.](images/ha-sql-bepool.png "Backend pool")
 
-21. Within SQL Server Management Studio, open the **C:\\SQDATA\\CreateAGRegion1.sql** file
+6. In the **BackendPool1** blade, select **+ Add** and choose the two SQL VMs. Select **Add** to close. Select **Save** to add these SQL VMs to **BackEndPool1**.
 
-    ![In the SQL Server Management Studio (Administrator) window, on the menu bar, File is selected. On the file menu, Open is selected, and from its menu, File is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image85.png "SQL Server Management Studio (Administrator) window")
+    ![Azure portal showing SQLVM1 and SQLVM2 being added to the backend pool.](images/ha-sql-poolvms.png "Backend pool VMs")
 
-22. Select the **Query** menu and click **SQLCMD Mode**
+    > **Note**: The load-balancing rule in the load balancer has been created with **Floating IP (direct server return)** enabled. This is important when using the Azure load balancer for SQL Server AlwaysOn Availability Groups.
 
-    ![On the Query tab, SQLCMD Mode is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image86.png "Query tab")
+7. From the Azure portal, navigate to the **SQLVM1** virtual machine. Select **Connect**, then choose **Bastion**.
 
-23. Click the **Execute** button to configure the Availability Group
+    ![Azure portal showing selecting Connect and then select Bastion.](images/ha-sqlvm1-bastion.png "Connect and select Bastion")
 
-    ![Screenshot of the Execute button.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image87.png "Execute button")
+8. Connect to the machine using the following credentials:
 
-    > **Note**: Some security messages are expected. This script was generated by the SQL Server New Availability Group Wizard and modified to support AUTOMATIC\_SEEDING. Automatic seeding makes initializing replicas much easier, and the speed of the process is increased significantly. For more details on automatic seeding and performance improvements please refer to SQLCAT's blog: <https://blogs.msdn.microsoft.com/sqlcat/2016/06/28/sqlsweet16-episode-2-availability-groups-automatic-seeding-2/>.
+    - **Username**: `demouser@contoso.com`
+    - **Password**: `Demo!pass123`
 
-    ![On the Messages tab, Security messages showing Connecting and Disconnecting activity display. At this time, we are unable to capture all of the information in the messages. Future versions of this course should address this.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image88.png "Messages tab")
+    > **Note**: When using Azure Bastion to connect to a VM using domain credentials, the username must be specified in the format `user@domain-fqdn` and **not** in the format `domain\user`.
 
-24. Expand **AlwaysOn High Availability -\> Availability Groups**, right-click **AdventureWorksAG** (Primary), and choose **Show Dashboard**. Your dashboard should look like this:
+    ![Azure portal showing connection to SQLVM1 using Bastion.](images/ha-sqlvm1-bastion1.png)
 
-    ![On the Dashboard, a green checkmark displays next to AdventureWorksAG: hosted by SQLVM - 1 (Replica role: Primary). The Availability group state is Healthy, and Synchronization state for SQLVM-1 SQLVM-2, AdventureWorks SQLVM-1 and AdventureWorks SQLVM-1 is Synchronized.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image89.png "Dashboard")
+9. On **SQLVM1**, select **Start** and then choose **Windows PowerShell**.
 
-25. On the Azure portal, open the settings of the **BackendLB** load balancer in the **contosoSQLRG** resource group
+    ![Screenshot of the Windows PowerShell icon.](images/image71.png "Windows PowerShell icon")
 
-    ![The BackendLB Load balancer option displays.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image90.png "BackendLB option")
+10. Copy and paste the following command into PowerShell and execute it. This will create the Windows Failover Cluster and add all the SQL VMs as nodes in the cluster. It will also assign a static IP address of **10.0.2.99** to the new Cluster named **AOGCLUSTER**.
 
-26. Click on **Backend pools**
-
-    ![Under Settings, Backend pools is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image91.png "Settings section")
-
-27. Click **BackendPool1** which will open a window showing **SQLVM-1**. Click the **Add a target network IP configuration**.
-
-    ![In the BackendPool1 blade, the Add a target network IP configuration link is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image92.png "BackendPool1 blade")
-
-28. From the List for Target Virtual Machine select the **SQLVM-2** and the Network IP Configuration **ipconfig1 (10.0.1.7)**
-
-    ![Fields in the BackendPool1 blade are set to the previously defined settings.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image93.png "BackendPool1 blade")
-
-29. Click the **Save** to add **SQLVM-2** to the **BackendPool1**
-
-    ![Under BackendPool1 (2 virtual machines), SQLVM-1 and SQLVM-2 display.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image94.png "BackendPool1 list")
-
-30. Go back to **SQLVM-1** and open an **Administrative PowerShell\_ISE** session. Execute the following PowerShell to configure your cluster for the probe port.
-
+    ```PowerShell
+    New-Cluster -Name AOGCLUSTER -Node SQLVM1,SQLVM2 -StaticAddress 10.0.2.99
     ```
+
+    ![In the PowerShell window, the command is shown after being successfully executed.](images/ha-createfailovercluster.png "PowerShell window")
+
+    >**Note**: It is possible to use a wizard for this task, but the resulting cluster will require additional configuration to set the static IP address in Azure.
+
+11. After the cluster has been created, select **Start** and then **Windows Administrative Tools**. Locate and open the **Failover Cluster Manager**.
+
+    ![Screenshot of the Failover Cluster Manager shortcut icon.](images/image154.png "Failover Cluster Manager shortcut icon")
+
+12. When the cluster opens, select **Nodes**, and the SQL Server VMs will show as nodes of the cluster and show their status as **Up**.
+
+    ![In Failover Cluster Manager, Nodes is selected in the tree view, and two nodes display in the details pane.](images/ha-fcm-2nodes.png "Failover Cluster Manager")
+
+13. If you select **Roles**, you will notice that currently, there aren't any roles assigned to the cluster.
+
+    ![In Failover Cluster Manager, Roles is selected in the tree view, and zero roles display in the details pane.](images/ha-fcm-0roles.png "Failover Cluster Manager")
+
+14. Select Networks, and you will see **Cluster Network 1** with status **Up**. If you navigate to the network, you will see the IP address space, and on the lower tab, you can select **Network Connections** and review the nodes.
+
+    ![In Failover Cluster Manager, Networks is selected in the tree view, and the network displays in the details pane.](images/ha-fcm-1network.png "Failover Cluster Manager")
+
+15. Right-click **AOGCLUSTER,** then select **More Actions**, **Configure Cluster Quorum Settings**.
+
+    ![In Failover Cluster Manager, a callout says to right-click the cluster name in the tree view, then select More Actions, and then select Configure Cluster Quorum Settings.](images/image159.png "Failover Cluster Manager")
+
+16. On **Before you Begin** in the wizard, select **Next**. Then choose **Select the quorum witness**. Then, select **Next** again.
+
+    ![On the Select Quorum Configuration Option screen of the Configure Cluster Quorum Wizard, the radio button for Select the quorum witness is selected.](images/image160.png "Configure Cluster Quorum Wizard")
+
+17. Select **Configure a cloud witness** and **Next**.
+
+    ![On the Select Quorum Witness screen, the radio button for Configure a cloud witness is selected.](images/image161.png "Select Quorum Witness screen")
+
+18. Copy the **storage account name** and **storage account key** values you noted earlier and paste them into their respective fields on the form. Leave the Azure Service endpoint as configured. Then, select **Next**.
+
+    ![Fields on the Configure cloud witness screen are set to the previously defined settings.](images/ha-cloudwitness-key.png "Configure cloud witness screen")
+
+19. Select **Next** on the Confirmation screen.
+
+    ![On the Confirmation screen, the Next button is selected.](images/image163.png "Confirmation screen")
+
+20. Select **Finish**.
+
+    ![Finish is selected on the Summary screen.](images/image164.png "Summary screen")
+
+21. Select the name of the Cluster again, and the **Cloud Witness** should now appear in the **Cluster Resources**. It is important to always use a third data center; in your case, a third Azure Region is used for your Cloud Witness.
+
+    ![Under Cluster Core Resources, the Cloud Witness status is Online.](images/image165.png "Cluster Core Resources section")
+
+22. Select **Start** and launch **SQL Server 2017 Configuration Manager**.
+
+    ![Screenshot of the SQL Server 2017 Configuration Manager option on the Start menu.](images/image166.png "SQL Server 2017 Configuration Manager option")
+
+23. Select **SQL Server Services**, then right-click **SQL Server (MSSQLSERVER)** and select **Properties**.
+
+    ![In SQL Server 2017 Configuration Manager, in the left pane, SQL Server Services is selected. In the right pane, SQL Server (MSSQLSERVER) is selected, and from its right-click menu, Properties is selected.](images/image167.png "SQL Server 2017 Configuration Manager")
+
+24. Select the **AlwaysOn High Availability** tab and check the box for **Enable Always OnAvailability Groups**. Select **Apply** and then select **OK** on the message that notifies you that changes won't take effect until after the server is restarted.
+
+    ![In the SQL Server Properties dialog box, on the AlwaysOn High Availability tab, the Enable Always OnAvailability Groups checkbox is checked, and the Apply button is selected.](images/image168.png "SQL Server Properties dialog box")
+
+    ![A pop-up warns that any changes will not take effect until the service stops and restarts. The OK button is selected.](images/image169.png "Warning pop-up")
+
+25. On the **Log On** tab, change the service account to `contoso\demouser` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
+
+    ![In the SQL Server Properties dialog box, on the Log On tab, fields are set to the previously defined settings. The OK button is selected.](images/ha-sql-logon.png "SQL Server Properties dialog box")
+
+    ![A pop-up asks you to confirm that you want to make the changes and restart the service. The Yes button is selected.](images/image171.png "Confirm Account Change pop-up")
+
+26. Return to the Azure portal and open a new Azure Bastion session to **SQLVM2**. Launch **SQL Server 2017 Configuration Manager** and repeat the steps above to **Enable SQL AlwaysOn** and change the **Log On** username. Make sure that you have restarted the SQL Service.
+
+27. Return to your session with **SQLVM1**. Use the Start menu to launch **Microsoft SQL Server Management Studio 18** and connect to the local instance of SQL Server. (Located in the Microsoft SQL Server Tools folder).
+
+    ![Screenshot of Microsoft SQL Server Management Studio 18 on the Start menu.](images/image172.png "Microsoft SQL Server Management Studio 18")
+
+28. Select **Connect** to sign on to **SQLVM1**. **Note**: The username for your lab should show **CONTOSO\demouser**.
+
+    ![Screenshot of the Connect to Server dialog box.](images/image173.png "Connect to Server dialog box")
+
+29. Right-click **Always On High Availability**, then select **New Availability Group Wizard**.
+
+    ![In Object Explorer, AlwaysOn High Availability is selected, and from its right-click menu, New Availability Group Wizard is selected.](images/image174.png "SQ Server Management Studio, Object Explorer")
+
+30. Select **Next** on the Wizard.
+
+    ![On the New Availability Group Wizard begin page, Next is selected.](images/image175.png "New Availability Group Wizard ")
+
+31. Provide the name **BCDRAOG** for the **Availability group name**, then select **Next**.
+
+    ![The Specify availability group options form displays the previous availability group name.](images/image176.png "Specify availability group options page")
+
+32. Select the **ContosoInsurance Database**, then select **Next**.
+
+    ![The ContosoInsurance database is selected from the user databases list.](images/image177.png "Select Databases page")
+
+33. On the **Specify Replicas** screen next to **SQLVM1**, select **Automatic Failover**.
+
+    ![On the Replicas tab, for SQLVM1, the checkbox for Automatic Failover (Up to 3) is selected.](images/image178.png "Specify Replicas screen")
+
+34. Select **Add Replica**.
+
+    ![Screenshot of the Add replica button.](images/image179.png "Add replica button")
+
+35. On the **Connect to Server** dialog box, enter the Server Name of **SQLVM2**and select **Connect**. **Note**: The username for your lab should show **CONTOSO\demouser**.
+
+    ![Image of the Connect to Server dialog box for SQLVM2.](images/image180.png "Connect to Server dialog box")
+
+36. For **SQLVM2**, select Automatic Failover and Availability Mode of Synchronous commit.
+
+    ![On the Replicas tab, for SQLVM2, the checkbox for Automatic Failover (Up to 3) is selected, and availability mode is set to synchronous commit.](images/image181.png "Specify Replicas Screen")
+
+37. Select **Endpoints** and review these that the wizard has created.
+
+    ![On the Endpoints tab, the three servers are listed.](images/ha-ag-endpoints.png "Specify Endpoints screen")
+
+38. Next, select **Listener**. Then, select the **Create an availability group listener**.
+
+    ![On the Listener tab, the radio button for Create an availability group listener is selected.](images/image185.png "Specify Listener screen")
+
+39. Add the following details:
+
+    - **Listener DNS Name**: BCDRAOG
+    - **Port**: 1433
+    - **Network Mode**: Static IP
+
+    ![Fields for the Listener details are set to the previously defined settings.](images/image186.png "Listener details")
+
+40. Next, select **Add**.
+
+    ![The Add button is selected beneath an empty subnet table.](images/image187.png "Add button")
+
+41. Select the Subnet of **10.0.2.0/24** and then add IPv4 **10.0.2.100** and select **OK**. This is the IP address of the Internal Load Balancer that is in front of the **SQLVM1** and **SQLVM2** in the **Data** subnet running in the **Primary** Site.
+
+    ![The Add IP Address dialog box fields are set to the previously defined settings.](images/image188.png "Add IP Address dialog box")
+
+42. Select **Next**.
+
+    ![On the Listener tab, the Next button is selected.](images/ha-ag-listener-next.png "Next button")
+
+43. On the **Select Initial Data Synchronization** screen, ensure that **Automatic seeding** is selected and select **Next**.
+
+    ![On the Select Initial Data Synchronization screen, the radio button for Automatic seeding is selected. The Next button is selected at the bottom of the form.](images/image192.png "Select Initial Data Synchronization screen")
+
+44. On the **Validation** screen, you should see all green. Select **Next**.
+
+    ![The Validation screen displays a list of everything it is checking and the results for each, which all display success. The Next button is selected.](images/ha-ag-valid.png "Validation screen")
+
+45. On the Summary page, select **Finish**.
+
+    ![On the Summary page, the Finish button is selected.](images/image194.png "Summary page")
+
+46. Once the AOG is built, check that each task was successful and select **Close**.
+
+    ![On the New Availability Group Results page, a message says the wizard has completed successfully, and the results for all steps are a success. The Close button is selected.](images/ha-ag-results.png "New Availability Group Results page")
+
+47. Move back to **SQL Management Studio** on **SQLVM1** and expand the **Always On High Availability** item in the tree view. Under Availability Groups, expand the **BCDRAOG (Primary)** item.
+
+    ![In SQL Management Studio, Always On High Availability is expanded in the tree view.](images/ha-ag-explorer.png "SQL Management Studio")
+
+48. Right-click **BCDRAOG (Primary)** and then select **Show Dashboard**. You should see that all the nodes have been added and are now "Green".
+
+    ![Screenshot of the BCDRAOG Dashboard indicating the status of all SQL Server VMs as healthy.](images/ha-ag-dashboard.png "BCDRAOG Dashboard")
+
+49. Next, select **Connect** and then **Database Engine** in SQL Management Studio.
+
+    ![Connect / Database Engine is selected in Object Explorer.](images/image200.png "Object Explorer")
+
+50. Enter **BCDRAOG** as the Server Name. This will be connected to the listener of the group that you created. **Note**: The username for your lab should show **CONTOSO\demouser**.
+
+    ![In the Connect to Server Dialog box, the Server name is BCDRAOG, and the connect button is selected.](images/image201.png "Connect to Server Dialog box")
+
+51. Once connected to the **BCDRAOG**, you can select **Databases** and will be able to see the database there. Notice that you do not know directly which server this is running on.
+
+    ![A call-out points to ContosoInsurance (Synchronized) in SQL Management Studio.](images/image202.png "SQL Management Studio")
+
+52. Move back to **PowerShell** on **SQLVM1**. Open a new file, paste in the following script, and select the **Play** button. This will update the Failover cluster with the IP address of the Listener that you created for the AOG.
+
+    ```Powershell
     $ClusterNetworkName = "Cluster Network 1"
-    $IPResourceName = "AdventureWorksAG_10.0.1.9"
-    $ILBIP = "10.0.1.50"
+    $IPResourceName = "BCDRAOG_10.0.2.100"
+    $ILBIP = "10.0.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
-    Start-ClusterResource -Name "AdventureWorksAG"
+    Start-ClusterResource -Name "BCDRAOG"
     ```
 
-![Commands display in the Administrator PowerShell ISE window At this time, we are unable to capture all of the information in the PowerShell window. Future versions of this course should address this.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image95.png "Administrator PowerShell ISE window")
+    ![In the Windows PowerShell window, the script from the lab guide has been executed.](images/ha-ise-listenerip.png "Windows PowerShell window")
 
-31. Connect to **SQLVM-02** and launch **SQL Server Management Studio**
+53. Move back to SQL Management Studio, select **Connect**, and then **Database Engine**.
 
-32. Open a Server connection to the **AdventureWorks** listener endpoint to verify connectivity. The listener is like entering a SQL Server's Name, but this is the AOG.
+    ![In Object Explorer, Connect / Database Engine is selected.](images/image200.png "Object Explorer")
 
-    ![The Connect to Server for SQL Server dialog box displays. Server type is Database Engine, Server name is AdventureWorks, and Authentication is Windows Authentication.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image96.png "Connect to Server for SQL Server dialog box")
+54. This time, put the following into the IP address of the Internal Load balancer of the **Primary** Site AOG Load Balancer: **10.0.2.100**. You again will be able to connect to the server, which is up and running as the master. **Note**: The username for your lab should show **CONTOSO\demouser**.
 
-    ![In Object Explorer, AdventureWorks (SQL Server 13.0.2164.0 - contoso\\demouser is selected.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image97.png "Object Explorer")
+    ![Fields in the Connect to Server dialog box are set to the previously defined settings.](images/image205.png "Connect to Server dialog box")
 
-33. After successfully connecting to the AOG listener, disconnect from both SQLVM-1 and SQLVM-2 by using Sign Out from the RDP windows
+55. Once connected to **10.0.2.100**, you can select **Databases** and will be able to see the database there. Notice that you do not know directly which server this is running on.
 
-### Task 2: Convert the SQL deployment to Managed Disks 
+    ![A callout points to the Databases folder in Object Explorer.](images/ha-ssms-ip.png "Object Explorer")
 
-In this task, you will convert the disks of the SQL deployment to managed disks. This task could be automated as part of the template deployment; however, it is important to understand how to migrate existing infrastructure to managed disks.
+    > **Note**: It could take a minute to connect the first time as this goes through the Azure Internal Load Balancer.
 
-1.  On LABVM open the PowerShell ISE Tool
+56. Move back to Failover Cluster Manager on **SQLVM1**, and you can review the IP Addresses that were added by selecting Roles and **BCDRAOG** and viewing the Resources. Notice how the **10.0.2.100** is Online.
 
-**Note**: In the next few steps, you will use PowerShell to migrate the disks for the SQL Unfractured to Managed Disks.
+    ![In the Failover Cluster Manager tree view, Roles is selected. Under Roles, BCDRAOG is selected, and details of the role are displayed.](images/ha-fcm-aogrole.png "Failover Cluster Manager")
 
-2.  In the execution pane, login to Azure using the Login-AzureRmAccount, and press Enter
+You have now successfully set up the SQL Server VMs to use Always On Availability Groups with a Cloud Witness storage account located in another region.
 
-    Login-AzureRmAccount
+### Task 4: Configure HA for the Web tier
 
-3.  At the Azure login screen, enter your Account and Password
+In this task, you will configure a high-availability web tier. This comprises two web server VMs, which you will locate behind an Azure load balancer. You will also configure the VMs to access the database using the Always On Availability Group endpoint you created earlier.
 
-    ![The Microsoft Azure login screen displays.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image98.png "Azure login screen")
+1. In the Azure portal, navigate to **WebVM1**, select **Connect** followed by **Bastion**, and connect to the VM using the following credentials:
 
-4.  Once logged in, make sure to set your subscription that is the default for this hands-on lab
+    - **Username**: `demouser@contoso.com`
+    - **Password**: `Demo!pass123`
 
+2. In **WebVM1**, open Windows Explorer, navigate to **C:\inetpub\wwwroot** and open the **Web.config** file using Notepad.
+
+    > **Note**: If the **Web.config** change does not run, go to **Start**, **Run** and type **iisreset /restart** from command line.
+
+3. In the **Web.config** file, locate the **\<ConnectionStrings\>** element and replace **SQLVM1** with **BCDRAOG** in the data source. Remember to **Save** the file.
+
+    ![Notepad is editing the web.config file. The data source is updated to BCDRAOG.contoso.com.](images/ha-webconfig.png "Web.config file")
+
+4. Repeat the above steps to make the same change on **WebVM2**.
+
+5. Return to the Azure portal and navigate to the **ContosoWebLBPrimary** load balancer blade. Select **Backend pools** and open **BackEndPool1**.
+
+    ![Azure portal showing the path to BackEndPool1 on ContosoWebLBPrimary.](images/ha-web-bepool.png "Backend pool select path")
+
+6. In the **BackendPool1** blade, select **VNet1 (ContosoRG1)** as the Virtual network. Then select **+ Add** and select the two web VMs. Select **Save**.
+
+    ![Azure portal showing WebVM1 and WebVM2 being added to the backend pool.](images/ha-web-poolvms.png "Backend pool VMs")
+
+7. You will now check that the Contoso sample application is working when accessed through the load-balancer. In the Azure portal, navigate to the **ContosoWebLBPrimaryIP** resource. This is the public IP address attached to the web tier load balancer front end. Copy the **DNS name** to the clipboard.
+
+    ![Azure portal showing web load balancer public IP, with DNS name highlighted.](images/ha-pip.png "Public IP DNS name")
+
+8. Open a new browser tab and paste the DNS name. The Contoso Insurance sample app is shown.
+
+    ![Browser screenshot showing the Contoso sample application. The address bar shows the DNS name copied earlier.](images/ha-app.png "Contoso app")
+
+    > **Note**: You will test the HA capabilities later in the lab.
+
+## Exercise 2: Enable Disaster Recovery for the Contoso application
+
+Duration: 90 minutes
+
+In this exercise, you will enable a secondary DR site in East US 2. This site will support each tier of the Contoso application, using a different technology in each case. The DR approach is summarized in the following table.
+
+|  Tier   |   DR Strategy   |
+|:--------|:----------------|
+| Web     | Failover using Azure Site Recovery |
+| SQL     | Secondary SQL Always On Availability Group replica, with asynchronous replication. Failover steps are integrated into Azure Site Recovery using Azure Automation. |
+| AD      | Active-active domain controllers |
+
+### Task 1: Deploy DR resources
+
+In this task, you will deploy the resources used by the DR environment. First, you will deploy a template to create the network and virtual machines. You will then manually deploy the Recovery Services Vault and Azure Automation account that Azure Site Recovery uses.
+
+1. In a new browser tab, navigate to **https://shell.azure.com**. You will be redirected to **https://portal.azure.com/#cloudshell** automatically. Open a **PowerShell** session, and create a Cloud Shell storage account if prompted to do so.
+
+    ![Screenshot of the Azure Cloud Shell with URL and PowerShell mode highlighted.](images/dr-cloudshell.png "Azure Cloud Shell")
+
+2. Update the **-Location** parameter in each of the commands below to be a different location than **ContosoRG11**. Execute the commands. These commands will create the DR resource group and deploy the DR resources.
+    You can proceed to the following tasks while the template deployment is in progress.
+
+    ```PowerShell
+    New-AzResourceGroup -Name 'ContosoRG2' -Location 'East US 2'
+
+    New-AzSubscriptionDeployment -Name 'Contoso-IaaS-DR' `
+        -TemplateUri 'https://raw.githubusercontent.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/master/Hands-on%20lab/Resources/templates/contoso-iaas-dr.json' `
+        -Location 'East US 2'
     ```
-    Get-AzureRMSubscription
-    Select-AzureRmSubscription -SubscriptionName ???your subscription name???
+
+    > **Note**: If your deployment fails with an error *`"The requested size for resource '<resourceID>' is currently not available"`*, add the parameter `-skuSizeVM 'D2s_v5'` to the end of the `New-AzSubscriptionDeployment` and rerun the command:
+
+    ```powershell
+    # Only run this command if the previous deployment failed with an error that size was not available
+    New-AzSubscriptionDeployment -Name 'Contoso-IaaS-DR-SKU' `
+        -TemplateUri 'https://raw.githubusercontent.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/master/Hands-on%20lab/Resources/templates/contoso-iaas-dr.json' `
+        -Location 'East US 2' -skuSizeVM 'D2s_v5'
     ```
 
-5.  Once this is completed, run the following command to verify your VMs for the hands-on lab are present.
+3. Take a few minutes to review the template while it deploys. Navigate to the Azure portal home page, select **Subscriptions**, then **Deployments**  to review the template and deployment progress. Note that the template includes:
+    - A DR virtual network, which is connected using VNet peering to the existing virtual network.
+    - Two additional domain controller VMs, **ADVM3** and **ADVM4**.
+    - An additional SQL Server VM, **SQLVM3**.
+    - Azure Bastion, to enable VM access.
 
-    ```
-    Get-AzureRMVM -ResourceGroupName contosoCloudShopRG
+    ![Screenshot of the disaster recovery resources for the Web application.](images/webdr-deploy.png "Successful deployment of Web DR resources")
 
-    ```
-    
-6.  Now, move to the scripting pane of the PowerShell ISE tool. Paste this code into the window.
+    Next, you will create the Recovery Services Vault used to replicate the Web tier VMs and orchestrate the cross-site failover.
 
-    ```
-    <#
-        The following code converts the existing availability to aligned/managed and then converts the disks to managed as well. 
-        Note: The PlatformFaultDomainCount is set to 2 - this is because the region currently only supports two managed fault domains
-    #>
+4. From the Azure portal, select **+Create a resource**, search for and select **Backup and Site Recovery**, and select **Create**.
 
-    $rgName = 'contosoCloudShopRG'
+5. Complete the **Recovery Services Vault** blade using the following inputs, then select **Review and Create**, followed by **Create**:
 
-    $avSetName = 'SQLAVSet'
+    - **Resource Group**: ContosoRG2
+    - **Name**: `BCDRRSV`
+    - **Location**: East US 2 *(your secondary region)*
 
-    $avSet = Get-AzureRmAvailabilitySet -ResourceGroupName $rgName -Name $avSetName
+    ![A screenshot of the Backup and Site Recovery Screen with the Create button selected.](images/dr-rsv.png "Backup and Site Recovery Screen Create Button")
 
-    $avSet.PlatformFaultDomainCount = 2
+6. Once the **BCDRRSV** Recovery Service Vault has been created, open it in the Azure portal and select the **Site Recovery** tab.
 
-    Update-AzureRmAvailabilitySet -AvailabilitySet $avSet -Sku Aligned
+    ![Screenshot of the Backup / Site Recovery tabs with Site Recovery tab selected.](images/image40.png "Backup / Site Recovery tabs")
 
-    foreach($vmInfo in $avSet.VirtualMachinesReferences)
+7. This is your dashboard for Azure Site Recovery (ASR).
+
+    ![The Azure Site Recovery dashboard displays.](images/image41.png "Azure Site Recovery dashboard")
+
+    > **Important**: Next, you will set up the Azure Automation account that will be used to automate certain failover and failback tasks. This will require several PowerShell scripts to be imported as Azure Automation runbooks. **Be sure to execute the following steps from the LabVM since that is where the scripts are located.**
+
+8. From the Azure portal, select **+Create a resource**, followed by **IT & Management Tools**, then **Automation**.
+
+9. Complete the **Add Automation Account** blade using the following inputs and then select **Review + Create** followed by **Create**:
+
+    - **Name**: Enter a Globally unique name starting with `BCDR`.
+    - **Resource group**: Use existing / **ContosoRG2**
+    - **Location**: Any region that support automation **except for** your primary region.
+
+    ![Fields in the Add Automation Account blade are set to the previously defined values.](images/dr-aa.png "Add Automation Account blade")
+
+    > **Note**: Azure Automation accounts are only allowed to be created in certain Azure regions, but they can act on any region in Azure (except Government, China, or Germany). It is not required to have your Azure Automation account in the same region as the failover resources, but it **CANNOT** be in your primary region.
+
+10. Once the Azure automation account has been created, select **Run as accounts** under **Account Settings**. Then, select **Create** under **Azure Run as Account**.
+
+    ![Screenshot of the Azure Automation account first selecting Run as accounts under Account Settings, then selecting Create under Azure Run As Account.](images/dr-aa-runas.png "Azure Automation Run As Accounts")
+
+11. Select Create. Once the deployment has finished, you'll have a new Azure Run As Account listed with an expiration date.
+
+    ![Screenshot of the new Azure Run As Account created with an expiration date.](images/dr-aa-runascreated.png "Azure Automation Run as accounts")
+
+12. Open the account and select **Modules** under **Shared Resources**.
+
+    ![Under Shared Resources, Modules is selected.](images/image46.png "Shared Resources section")
+
+13. When the Modules load, search for and select **Az.Accounts**, then select **Import**, then **OK**.
+
+    ![Screenshot showing the Az.Accounts module.](images/dr-azacc.png "Az.Accounts module")
+
+    ![Import is selected for the Az.Accounts module.](images/dr-azaccimp.png "Az.Accounts import button")
+
+14. It will take a few minutes to import the module. From the Recovery Services Vault blade, select **Modules** to view the current status and **Refresh** to monitor progress.
+
+    ![In the Automation Account blade, under Shared Resources, Modules is selected. The Az.Accounts module has the status 'Importing'.](images/dr-azaccstatus.png "Modules blade")
+
+15. Once the Az.Accounts module has been imported; repeat the above steps to import the **Az.Network** and **Az.Compute** modules.
+
+16. Next, navigate back to the **Azure Automation Account** blade and select **Runbooks**, then select **Import a runbook**.
+
+    ![The 'Import a runbook' button is highlighted in Azure Automation.](images/dr-rbimp.png "Import a runbook button")
+
+    > **Note**: You must be connected to the **LABVM** to complete the next steps.
+
+17. Select the **Folder** icon on the Import blade and select the file **ASRRunbookSQL.ps1** from the `C:\HOL\` directory on the **LABVM**. Set the Runbook type to **PowerShell Workflow**. Update the name to **ASRSQLFailover**. This is the name of the Workflow inside the Runbook script. Leave everything else set to the default. Select **Import**.
+
+    ![Fields in the 'Import a runbook' blade are set to the previously defined values.](images/dr-rbimp2.png "Import a runbook")
+
+18. Once the Runbook is imported, the runbook editor will load. You can review the comments to understand the runbook better if you wish. Once you are ready, select **Publish**, followed by **Yes** at the confirmation prompt. This makes the runbook available for use.
+
+    ![On the top menu of the Edit PowerShell Workflow Runbook blade, Publish is selected.](images/dr-rbpub.png "Publish runbook")
+
+19. Repeat the above steps to import and publish the **ASRRunbookWEB.ps1** runbook. Name this runbook **ASRWEBFailover**.
+
+20. . Navigate back to **Runbooks**, and make sure that both Runbooks show as **Published**.
+
+    ![Two runbooks have authoring status as published: ASRSQLFailover, and ASRWEBFailover.](images/image70.png "Runbooks")
+
+    > **Note**: When you configure the ASR Recovery Plan for the IaaS deployment, you will use the SQL Runbook as a Pre-Failover Action and the Web Runbook as a Post-Failover action. They will run both ways and have been written to take the "Direction" of the failover into account when running.
+
+    Next, you will create a variable in Azure Automation that contains settings (such as resource group names and VM names) that describe your environment. This information is required by the runbooks you imported. Using variables allows you to avoid hard-coding this information in the runbooks themselves.
+
+21. In your Azure Automation account, select **Variables**, then **Add a variable**.
+
+    ![Azure portal showing variables pane in Azure Automation.](images/dr-addvar.png "Add a variable")
+
+22. In the **New Variable** blade, enter `BCDRIaaSPlan` as the variable name. The variable type should be **String**. Paste the following into the variable **Value**, then select **Create**.
+
+    ```json
     {
-        $vm = Get-AzureRmVM -ResourceGroupName $rgName | Where-Object {$_.Id -eq $vmInfo.id}
-
-        Stop-AzureRmVM -ResourceGroupName $rgName -Name $vm.Name -Force
-
-        ConvertTo-AzureRmVMManagedDisk -ResourceGroupName $rgName -VMName $vm.Name
+        "PrimarySiteRG": "ContosoRG1",
+        "PrimarySiteSQLVM1Name": "SQLVM1",
+        "PrimarySiteSQLVM2Name": "SQLVM2",
+        "PrimarySiteSQLPath": "SQLSERVER:\\Sql\\SQLVM1\\DEFAULT\\AvailabilityGroups\\BCDRAOG",
+        "PrimarySiteVNetName": "VNet1",
+        "PrimarySiteWebSubnetName": "Apps",
+        "PrimarySiteWebLBName": "ContosoWebLBPrimary",
+        "SecondarySiteRG": "ContosoRG2",
+        "SecondarySiteSQLVMName": "SQLVM3",
+        "SecondarySiteSQLPath": "SQLSERVER:\\Sql\\SQLVM3\\DEFAULT\\AvailabilityGroups\\BCDRAOG",
+        "SecondarySiteVNetName": "VNet2",
+        "SecondarySiteWebSubnetName": "Apps",
+        "SecondarySiteWebLBName": "ContosoWebLBSecondary"
     }
     ```
 
-7.  Next, click the **Play** button in PowerShell\_ISE. This will deallocate all the machines in the Availability Set SQLAVSET and migrate them to a Managed AVSET and the disk to Managed Disks.
+    ![The 'New Variable' blade is filled with the variable name and value.](images/dr-newvar.png "New Variable")
 
-    > **Note**: This process will take about 10-15 minutes to complete and be careful not to stop the process.
+23. Notice that the variable **BCDRIaaSPlan** has been created.
 
-8.  Open the Azure portal and browse to the **CloudShopRG** Resource Group. Notice now, the machines are using Managed Disks, and the disk objects now appear.
+    ![The 'BCDRIaaSPlan' variable is shown in the Automation Account.](images/dr-var.png "Automation Account variables")
 
-    ![Four Disk objects display: SQLVM-1, SQLVM-1\_SQL1datadisk1, SQLVM-1\_SQL1datadisk2, and SQLVM-1\_SQLVM-1OSDisk.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image99.png "Disk objects")
+24. Before continuing, check that the template deployment you started at the beginning of this task has been completed successfully. Then, from the Azure portal home page, select **Subscriptions**, select your subscription, then select **Deployments**.
 
-### Task 3: Build a scalable and resilient web tier
+    ![The 'Contoso-IaaS-DR' template deployment shows as successful.](images/dr-deploy-ok.png "Template status")
 
-In this task, you will deploy a VM scale set that can automatically scale up or down based on the CPU criteria. The application the scale set deploys points to the new SQL AlwaysOn availability group created previously.
+### Task 2: Inspect DR for the Domain Controller tier
 
-1.  Navigate to <https://github.com/opsgility/cw-building-resilient-iaas-architecture-ss> and click the **Deploy to Azure Button**
+The failover site in East US 2 has been deployed with two additional domain controllers, **ADVM3** and **ADVM4**. These are integrated with the existing `contoso.com` domain hosted on **ADVM1** and **ADVM2** in the primary site. They run in a fully active-active configuration (therefore, no failover is required for this tier).
 
-    ![The Deploy to Azure button is highlighted for deploying a sample from GitHub.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image100.png "Sample screen")
+The configuration of these domain controllers is fully automatic. In this task, you will simply review the rest of the configuration to confirm everything is as it should be.
 
-2.  Specify the existing resource group **CloudShopRG** and set the **Instance Count to 2**
+1. From the Azure portal home page, select **Subscriptions**, choose your subscription, select **Deployments**, then open the **Contoso-IaaS-DR** deployment used for the DR site.
 
-    > **Note**: The instance count is the initial number of servers deployed. The number can change based on the auto scale rules set in the ARM template.
+    ![Image showing the steps taken to view the 'Contoso-IaaS-DR' deployment.](images/dr-deployment.png "DR deployment")
 
-3.  Agree to the terms, check **Pin to dashboard** and click **Purchase**
+2. Select **Template** and review the template contents. Note the use of `dependsOn` to carefully control the deployment sequence. The resources are deployed as follows:
 
-4.  While the scale set is deploying, open the ARM template you just deployed by navigating to: <https://github.com/opsgility/cw-building-resilient-iaas-architecture-ss/blob/master/azure-deploy.json>. Review the auto scale settings in the autoscalewad resource to understand how the default auto scale settings are configured.
+    - The VNet2 virtual network is created.
+    - VNet2 is peered with VNet1. This peering creates connectivity between the two networks.
+    - The DNS settings in VNet2 are updated to point to the domain controllers in VNet1.
+    - The new domain controllers, **ADVM3** and **ADVM4**, are deployed to VNet2 with static private IP addresses. A custom script extension is used to configure these VMs as domain controllers.
+    - The DNS settings in VNet2 are then updated to point to these new domain controllers.
+    - Other VMs (such as **SQLVM3**) are now able to be deployed.
 
-### Summary
+    ![Azure portal showing the Contoso-IaaS-DR template, with the deployment sequence highlighted.](images/dr-ad.png "DR template")
 
-In this exercise, you deployed resilient web servers behind a load balancer, and a SQL Always-On Availability Group for database resiliency.
+3. Navigate to the **ContosoRG2** resource group. Inspect network interface (NIC) resources for the **ADVM3** and **ADVM4** VMs to confirm their network settings include the static private IP addresses **10.1.3.100** and **10.1.3.101**, respectively.
 
-## Exercise 4: Configure SQL Server Managed Backup 
+    ![Network interface configuration showing a static private IP address for ADVM3.](images/dr-adip.png "Static IPs")
 
-Duration: 15 minutes
+4. Navigate to the **VNet2** virtual network. Select **DNS servers** and confirm that the IP addresses for **ADVM3** and **ADVM4** are configured.
 
-In this exercise, you will configure SQL Server Managed Backup to back up to an Azure Storage Account.
+    ![The Azure portal shows the DNS settings for VNet2.](images/dr-dns.png "Template status")
 
-### Task 1: Create an Azure Storage Account
+5. Select **Peerings** and confirm that the network is peered with VNet1.
 
-In this task, you will add a 3rd node to the SQL Always-On deployment in a second region that you can then failover with Azure Site Recovery in the event of a failure in the primary region.
+    ![The Azure portal shows VNet2 is peered with VNet1.](images/dr-peer.png "VNet peering")
 
-1.  From the lab virtual machine, execute the following PowerShell ISE commands to create a new storage account and generate the tSQL needed to configure managed backup for the AdventureWorks database
+### Task 3: Configure DR for the SQL Server tier
 
-    ```
-    $storageAcctName = "[unique storage account name]"
+This task will extend the SQL Server Always On Availability Group you created earlier to include **SQLVM3** as an asynchronous replica running in the DR site.
 
-    $resourceGroupName = "contosoCloudShopRG"
-    $containerName= "backups"
-    $location = "West Central US"
-    $storageSkuName = "Standard_LRS"
+This task comprises the following steps:
 
+- Add SQLVM3 to the load-balancer backend pool in the DR site.
+- Add SQLVM3 to the existing Windows Server Failover Cluster.
+- Enable AlwaysOn and set the domain login credentials on SQLVM3.
+- Update the Availability Group Listener to include the SQLVM3 IP address.
+- Add SQLVM3 as an asynchronous replica in the existing Always On Availability Group.
+- Update the failover cluster with the Listener IP address.
 
-    "Creating Storage Account $storageAcctName"
-    $sa = New-AzureRmStorageAccount -ResourceGroupName $resourceGroupName  `
-                                    -Name $storageAcctName `
-                                    -Location $location `
-                                    -SkuName $storageSkuName 
+1. Return to the Azure portal and navigate to the **ContosoSQLLBSecondary** load balancer blade in **ContosoRG2**. Select **Backend pools** and open **BackEndPool1**. Note that the pool is connected to the **VNet2** virtual network. Select **+ Add**.
 
+    ![Azure portal showing where to select Add on the ContosoSQLLBSecondary load balancer backend pool to add a new VM.](images/ha-lb.png "Backend pool")
 
-    $storageKey = (Get-AzureRmStorageAccountKey -Name $storageAcctName -ResourceGroupName $resourceGroupName )[0].Value
-    $context = New-AzureStorageContext -StorageAccountName $storageAcctName -StorageAccountKey $storageKey
+2. Select **SQLVM3**. Select **Add**. Select **Save** on **BackEndPool1** to save changes.
 
+    ![Azure portal showing SQLVM3 being added to the ContosoSQLLBSecondary load balancer backend pool.](images/ha-lb2.png "SQL VM added to backend pool")
 
-    Write-Host "Creating New Storage Container  $containerName" 
-    New-AzureStorageContainer -name $containerName -permission container -context $context
+    > **Note**: For this lab, the DR site is configured with a single SQL Server VM. Using a load balancer is therefore not strictly required. However, it allows the DR site to be extended to include its own HA cluster if needed.
 
+3. Return to your browser tab containing your Bastion session with **SQLVM1**. (If you have closed the tab, reconnect using Azure Bastion with username `demouser@contoso.com` and password `Demo!pass123`.)
 
-    $fullSasToken = New-AzureStorageContainerSASToken -Name $containerName -Permission rwdl -FullUri -Context $context  
-    $containerUrl = $fullSasToken.Substring(0,$fullSasToken.IndexOf("?"))
-    $sasToken = $fullSasToken.Substring($fullSasToken.IndexOf("?")+1)
+4. On **SQLVM1**, use **Windows PowerShell** to execute the following command. This command will add **SQLVM3** as a node in the existing Windows Server Failover Cluster.
 
-
-    $enableManagedBackupScript = @"
-    --------------------
-    ---BEGIN TSQL Script
-    --------------------
-    CREATE CREDENTIAL [$containerUrl] 
-    WITH IDENTITY = 'Shared Access Signature', 
-         SECRET = '$sasToken' 
-
-    GO
-
-    EXEC msdb.managed_backup.sp_backup_config_basic   
-     @enable_backup = 1,   
-     @database_name = 'AdventureWorks',  
-     @container_url = '$containerUrl',   
-     @retention_days = 30
-       
-     --------------------
-     ---END TSQL Script
-     --------------------
-    "@
-
-
-    write-host $enableManagedBackupScript 
+    ```PowerShell
+    Add-ClusterNode -Name SQLVM3
     ```
 
-2.  Execute the code using PowerShell ISE. Make sure you change the **\$storageAcctName = \"\[unique storage account name\]\"** field to a unique storage account name across Azure prior to execution. Make sure you save the code generated between the **Begin TSQL Script and End TSQL Script** in your PowerShell ISE output after execution into a notepad file. This code creates an identity using a Shared Access Signature (SAS) to a container in the storage account and configures managed backup when executed.
+5. Select **Start** and then **Windows Administrative Tools**. Locate and open the **Failover Cluster Manager**. Expand the **AOGCLUSTER** and select **Nodes**. Note that SQLVM3 is now included in the list, with the status **Up**.
 
-### Task 2: Configure managed backup in SQL Server
+    ![In Failover Cluster Manager, Nodes is selected in the tree view, and three nodes are displayed in the details pane.](images/dr-fcm-3nodes.png "Failover Cluster Manager")
 
-1.  Connect to **SQLVM-1** using remote desktop and launch SQL Server Management Studio
+6. Return to the Azure portal. Locate **SQLVM3**, and connect to the VM using Azure Bastion with the username `demouser@contoso.com` and the password `Demo!pass123`.
 
-2.  Right click on **SQLVM-1**, and click **New Query**
+7. On **SQLVM3**, select **Start** and launch **SQL Server 2017 Configuration Manager**.
 
-    ![A screen showing how to launch the new query pane in SQL Server Management Studio.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image102.png "Launching the new query pane")
+    ![Screenshot of the SQL Server 2017 Configuration Manager option on the Start menu.](images/image166.png "SQL Server 2017 Configuration Manager option")
 
-3.  Paste in the following code and click **Execute** to enable SQL Server Agent extended stored procedures. Refresh SQL Server Management Studio and if SQL Server Agent is stopped right click on it and click Start.
+8. Select **SQL Server Services**, then right-click **SQL Server (MSSQLSERVER)** and select **Properties**.
 
+    ![In SQL Server 2017 Configuration Manager, SQL Server Services is selected in the left pane. SQL Server (MSSQLSERVER) is selected in the right pane, and from the MSSQLServer right-click menu, Properties is selected.](images/image167.png "SQL Server 2017 Configuration Manager")
+
+9. Select the **AlwaysOn High Availability** tab and check the box for **Enable AlwaysOn Availability Groups**. Select **Apply** and then select **OK** on the message that notifies you that changes won't take effect until after the server is restarted.
+
+    ![In the SQL Server Properties dialog box, on the AlwaysOn High Availability tab, the Enable AlwaysOn Availability Groups checkbox is checked, and the Apply button is selected.](images/image168.png "SQL Server Properties dialog box")
+
+    ![A pop-up warns that any changes will not take effect until the service stops and restarts. The OK button is selected.](images/image169.png "Warning pop-up")
+
+10. On the **Log On** tab, change the service account to `contoso\demouser` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
+
+    ![In the SQL Server Properties dialog box, on the Log On tab, fields are set to the previously defined settings. The OK button is selected.](images/ha-sql-logon.png "SQL Server Properties dialog box")
+
+    ![A pop-up asks you to confirm that you want to make the changes and restart the service. The Yes button is selected.](images/image171.png "Confirm Account Change pop-up")
+
+11. Return to your session with **SQLVM1**. Open **Microsoft SQL Server Management Studio 18** and connect to the local instance of SQL Server.
+
+12. Expand the **Always On High Availability** node. Under **Availability Group Listeners**, right-click on **BCDRAOG** and select **Properties**.
+
+    ![On the BCDRAOG Listener context menu, 'Properties' is selected.](images/dr-sql-l1.png "Listener properties")
+
+13. On the BCDRAOG Listener properties dialog, select **Add**.
+
+    ![On the BCDRAOG Listener properties dialog, 'Add' is selected.](images/dr-sql-l2.png "Listener - Add")
+
+14. On the Add IP Address dialog, check the subnet is **10.1.2.0** (this is the Data subnet in VNet2). Enter the IP address **10.1.2.100** (this is the frontend IP of the SQL load balancer in VNet2). Select **OK**.
+
+    ![On the BCDRAOG Listener Add IP Address dialog, the IP address is entered as specified.](images/dr-sql-l3.png "Listener - IP")
+
+15. Two IP addresses should be shown on the BCDRAOG Listener properties dialog. Select **OK** to close the dialog and commit the change.
+
+    ![On the BCDRAOG Listener properties dialog, two IP addresses are shown. 'OK' is selected.](images/dr-sql-l4.png "Listener - two IPs")
+
+16. Under **Availability Groups**, right-click on **BCDRAOG (Primary)** and select **Add Replica..** to open the Add Replica wizard.
+
+    ![In Object Explorer, under Always On High Availability, the BCDRAOG availability group is selected, and from its right-click menu, Add Replica is selected.](images/dr-sql-addreplica.png "SQL Server Management Studio - Add Replica")
+
+17. Select **Next** on the wizard.
+
+    ![On the Add Replica Wizard 'Introduction' page, Next is selected.](images/dr-sql-r1.png "Add Replica wizard")
+
+18. Select **Connect** to connect to SQLVM2, then **Connect** again on the 'Connect to Server' prompt. Then select **Next**.
+
+    ![On the Add Replica Wizard 'Connect to Replicas' page, SQLVM2 is connected and Next is selected.](images/dr-sql-r2.png "Connect to Replicas page")
+
+19. On the **Specify Replicas** page, select **Add Replica...**.
+
+    ![Screenshot of the Add replica button.](images/dr-sql-r3.png "Add replica button")
+
+20. On the **Connect to Server** dialog box, enter the Server Name of **SQLVM3** and select **Connect**.
+
+    ![Screenshot of the Connect to Server dialog box for SQLVM3.](images/dr-sql-connectsqlvm3.png "Connect to Server dialog box")
+
+21. For **SQLVM3**, leave the default settings of 'Asynchronous commit' with 'Automatic Failover' disabled. Select **Next**.
+
+    ![The SQLVM3 replica settings are asynchronous commit with automatic failover disabled. The Next button is highlighted.](images/dr-sql-r4.png "SQLVM3 replica settings")
+
+22. On the **Select Data Synchronization** page, ensure that **Automatic seeding** is selected and select **Next**.
+
+    ![On the Select Data Synchronization page, the radio button for Automatic seeding is selected. The Next button is selected at the bottom of the form.](images/dr-sql-r5.png "Select Data Synchronization page")
+
+23. On the **Validation** screen, you should see all green, except for a warning for 'Checking the listener configuration'. The listener configuration warning will be addressed later. Select **Next**.
+
+    ![The Validation screen displays a list of everything it is checking and the results for each, which all display success except the last one. The Next button is selected.](images/dr-sql-r6.png "Validation screen")
+
+24. On the Summary page, select **Finish**.
+
+    ![On the Summary page, the Finish button is selected.](images/dr-sql-r7.png "Summary page")
+
+25. Once the AOG is built, check that each task was successful and select **Close**.
+
+    ![On the Results page, a message says the wizard has completed successfully, and the results for all steps are a success. The Close button is selected.](images/dr-sql-r8.png "Results page")
+
+26. Under Availability Groups, right-click **BCDRAOG (Primary)** and then select **Show Dashboard**. You should see that the **SQLVM3** node has been added and is synchronizing.
+
+    ![Screenshot of the BCDRAOG Dashboard showing SQLVM3 synchronizing.](images/dr-sql-dash.png "BCDRAOG Dashboard")
+
+27. Move back to **PowerShell** on **SQLVM1**. Paste in the following script, and press **Return**. This script will update the Failover cluster with the new Listener IP address you created.
+
+    ```Powershell
+    $ClusterNetworkName = "Cluster Network 2"
+    $IPResourceName = "BCDRAOG_10.1.2.100"
+    $ILBIP = "10.1.2.100"
+    Import-Module FailoverClusters
+    Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
+    Stop-ClusterResource -Name $IPResourceName
+    Start-ClusterResource -Name "BCDRAOG"
     ```
-    EXEC sp_configure 'show advanced options', 1
-    GO
-    RECONFIGURE
-    GO
-    EXEC sp_configure 'Agent XPs', 1
-    GO
-    RECONFIGURE
-    GO
-    ```
 
-4.  Paste the code copied to notepad (the code that creates the new SQL identity with a Shared Access Signature) in the previous task into the query window replacing the existing code and click **Execute**
+    ![In the Windows PowerShell window, the script from the lab guide has been executed.](images/dr-ise-listenerip.png "Windows PowerShell window")
 
-5.  Paste the code into the query window replacing the existing code and click **Execute** to create a custom backup schedule
+28. Move back to Failover Cluster Manager on **SQLVM1**, select **Roles**, then **BCDRAOG**. Notice how the **Resources** tab shows that the new IP address **10.1.2.100** has been added and is currently Offline.
 
-    ```
-    USE msdb;  
-    GO  
-    EXEC managed_backup.sp_backup_config_schedule   
-         @database_name =  'AdventureWorks'  
-        ,@scheduling_option = 'Custom'  
-        ,@full_backup_freq_type = 'Weekly'  
-        ,@days_of_week = 'Monday'  
-        ,@backup_begin_time =  '17:30'  
-        ,@backup_duration = '02:00'  
-        ,@log_backup_freq = '00:05'  
-    GO  
-    ```
-6.  Execute the following tSQL in the query window to generate a backup on-demand. You can also specify Log for \@type
+    ![In the Failover Cluster Manager tree view, Roles is selected. Under Roles, BCDRAOG is selected, and the Resources tab is selected, displaying the offline IP address.](images/dr-fcm-role.png "Failover Cluster Manager")
 
-    ```
-    EXEC msdb.managed_backup.sp_backup_on_demand   
-    @database_name  = 'AdventureWorks',
-    @type ='Database' 
-    ```
+### Task 4: Configure DR for the Web tier
+
+In this task, you will configure DR for the Contoso application web tier.
+
+The DR solution for the web tier uses Azure Site Recovery to continually replicate the primary site web tier VMs to Azure storage. During failover, the replicated data is used to create new VMs in the DR site, which is pre-configured with the virtual network and web-tier load balancer.
+
+Custom scripts in Azure Automation are called by Azure Site recovery to add the recovered web VMs to the load balancer and failover the SQL Server.
+
+1. From the Azure portal on **LABVM**, open the **BCDRRSV** Recovery Services Vault located in the **ContosoRG2** resource group.
+
+2. Under **Getting Started**, select **Site Recovery**. Next, select **Step 1: Enable replication** in the **For On-Premises Machines and Azure VMs** section.
+
+    ![In the ASR blade, Getting Started is highlighted. Under For On-Premises Machines and Azure VMs, Step 1: Enable replication is selected.](images/dr-asr-1.png "Step 1 selected")
+
+3. On **Step 1 - Source**, select the following inputs and then select **Next**:
+
+    - **Source Location**: Central US *(or what you select as your Primary region)*
+    - **Azure virtual machine deployment model**: Resource Manager
+    - **Source resource group**: ContosoRG1
+    - **Disaster Recovery between Availability Zones?**: No (this option is for DR between availability zones *within* a region)
+
+    ![In the Source blade, fields are set to the previously defined settings.](images/dr-asr-2.png "Source blade")
+
+4. On **Step 2 - Virtual Machines**, select **WebVM1** and **WebVM2** and then select **Next**.
+
+    ![In the Select virtual machines blade, the checkboxes for WebVM1 and WebVM2 are selected.](images/dr-asr-3.png "Select virtual machines blade")
+
+5. On the **Replication settings** tab, select the **Target location** as **East US 2** (or what you selected as your secondary site Azure region). Then, in the 'Resource group, Network, Storage and Availability' section, select **Customize**.
+
+    ![In the Customize target settings blade, the Target location is set to East US 2, and the customize button is highlighted.](images/dr-asr-4.png "Configure settings blade")
+
+6. Update the blade using the following:
+
+    - **Target resource group**: ContosoRG2
+    - **Target virtual network**: VNet2
+
+    Review the settings for each VM, keeping their default values. Then select **OK**.
+
+    ![In the Customize target settings blade, under General Settings and VM Settings, fields are set to the previously defined settings.](images/dr-asr-5.png "Configure settings blade")
+
+    > **Note**: Double check these selections; they are **critical** to your on-premise to Azure failover.
+
+7. Under 'Replication Policy', review the default policy but do not make any changes.
+
+    ![The Replication Policy settings use default values.](images/dr-asr-6a.png "Replication policy")
+
+8. Under 'Extension settings', select **\[+\] Show details**. Change the **Automation Account** to use your existing Automation Account.
+
+    ![The Extension settings show the existing Automation Account has been selected.](images/dr-asr-7.png "Extension settings")
+
+9. Next, select **Enable replication**.
+
+    ![Screenshot of the Enable replication button.](images/image233.png "Enable replication button")
+
+10. The Azure portal will start the deployment. This deployment will take approximately 10 minutes to complete. Wait for replication to complete before moving to the next step.
+
+    ![A message is displayed indicating Enabling replication for two VM(s) has successfully completed.](images/image234.png "Enabling replication for two VM(s)")
+
+11. The **BCDRRSV** blade should still have the **Site Recovery** option (under 'Getting started') selected. Select **Step 2: Manage Recovery Plans**.
+
+    ![The image shows the path to Manage Recovery Plans.](images/dr-asr-8.png "Manage Recovery Plans")
+
+12. Select **+Recovery plan**.
+
+    ![On the Recovery Services vault blade top menu, Add a recovery plan is selected.](images/dr-asr-9.png "Add recovery plan")
+
+13. Fill in the **Create recovery plan** blade as follows:
+
+    - **Name**: BCDRIaaSPlan
+    - **Source**: Central US *(This is your primary region.)*
+    - **Target**: East US 2 *(This is your secondary region.)*
+    - **Allow items with deployment model**: Resource Manager
+    - **Select Items**: Select **WebVM1** and **WebVM2**.
+
+    ![Fields in the Create recovery plan blade are set to the previously defined settings.](images/dr-asr-10a.png "Create recovery plan blade")
+
+    > **Note**: It is **critical** to use the correct recovery plan name `BCDRIaaSPlan`. This plan name must match the name of the Azure Automation variable you created in the first task in this exercise.
+
+14. Select **Create** to create the recovery plan. After a moment, the **BCDRIaaSPlan** Recovery plan will appear. Select it to review.
+
+    ![In the Recovery Plans blade, BCDRIaaSPlan is selected.](images/dr-asr-11.png "Recovery plans")
+
+15. When the **BCDRIaaSPlan** loads **notice**, it shows **2 VMs in the Source**, which is your **Primary** Site.
+
+16. You will now customize the recovery plan to trigger the SQL failover and configure the web tier load-balancer during the failover process; select **Customize**.
+
+    ![On the BCDSRV blade top menu, Customize is selected. Under Items in recovery plan, the source shows two and the VM icon.](images/dr-asr-12.png "BCDSRV blade")
+
+17. Once the **BCDRIaaSPlan** blade loads, select the **ellipsis** next to **All groups failover**, then select **Add pre-action** from the context menu.
+
+    ![In the Recovery plan blade, the right-click menu for All groups failover displays, and Add pre-action is selected.](images/dr-asr-13.png "Recovery plan blade")
+
+18. On the **Insert action** blade, select **Script** and then provide the name `ASRSQLFailover`. Ensure that your Azure Automation account is selected, and then choose the Runbook name: **ASRSQFailover**. Select **OK**.
+
+    > **Note**: If nothing happens, select the **X** in the upper right corner and select **OK** when asked about discarding your changes. You will notice that the script is still added to the recovery plan.
+
+    ![Fields in the Insert action blade are set to the ASRRunBookSQL script.](images/dr-asr-14.png "Insert action blade")
+
+    > **Note**: As noted on the 'Insert action' blade, the ASRSQLFailover runbook will be executed on both failover and failback. The runbook has been written to support both scenarios.
+
+19. Once the **BCDRIaaSPlan** blade loads, select the **ellipsis** next to **Group 1: Start**, then select **Add post action** from the context menu.
+
+    ![In the Recovery plan blade, the Group 1: Start right-click menu displays, and Add post action is selected.](images/dr-asr-15.png "Recovery plan blade")
+
+20. On the **Insert action** blade, select **Script** and then provide the name: **ASRWEBFailover.** Ensure that your Azure Automation account is selected and then choose the Runbook name: **ASRWEBFailover**. Select **OK**.
     
-## Exercise 5: Validate resiliency
+    > **Note**: If nothing happens, select the **X** in the upper right corner and select **OK** when asked about discarding your changes. You'll notice that the script is still added to the recovery plan.
 
-### Task 1: Validate resiliency for the CloudShop application 
+    ![Fields in the Insert action blade are set to the ASRWebFailover script.](images/dr-asr-16.png "Insert Action blade")
 
-1.  In the Azure portal, open the **CloudShopRG** resource group. Click the VM scale set created in the previous task.
+21. Make sure that your **Pre-steps** are running under **All groups failover** and the **Post-steps** are running under **Group1: Start**. Select **Save**.
 
-2.  Click the Scaling menu item to review the auto scale settings that were deployed with the ARM template
+    ![In the Recovery plan blade, both the ASRFSQLFailover and ASRWEBFailover scripts are called out under All groups failover: Pre-steps, and Group 1: Post-steps.](images/dr-asr-17.png "Recovery plan blade")
 
-    ![The scaling menu item under settings.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image103.png "Scaling")
+22. After a minute, the portal will provide a successful update notification. This means that your recovery plan is fully configured and ready to failover and back between the primary and secondary regions.
 
-    ![The screen depicts the auto scale rules deployed by the ARM template.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image104.png "Auto scale settings")
+    ![The Updating recovery plan message shows that the update was successfully completed.](images/image253.png "Updating recovery plan message")
 
-3.  Click the **Overview** tab and copy the public IP address to the clipboard, and navigate to it in a different browser tab
+23. Return to the Recovery Services Vault **BCDRRSV** blade and select the **Replicated Items** link under **Protected Items**. You should see **WebVM1** and **WebVM2**. The Replication Health should be **Healthy**. The Status will show the replication progress. Once both VMs show status **Protected** replication is complete, you will be able to test the failover.
 
-4.  After the application is loaded, click the Spike CPU button to simulate an auto scale event
+    ![Under Replicated Items, the status for WebVM1 is 97% Synchronized and WebVM2 is now Protected.](images/dr-asr-18.png "Replicated Items")
 
-    ![A screen that shows the web page that allows for spiking the CPU,.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image105.png "CPU Spike Demo")
+    > **Note**: It can take up to 30 minutes for the replication to complete.
 
-5.  After 15-20 minutes, click the instances button to validate that additional instances were added in response to the CPU spike
+### Task 5: Configure a public endpoint using Azure Front Door
 
-    ![The instances icon under settings.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image106.png "Instances")
+There is just one step remaining to complete your DR environment. After a failover to the DR site, the IP address for the Contoso application (the web-tier load balancer frontend IP address) will change. Therefore, users need to be directed to the failover IP address.
 
-    You will see something like the following after a while with new instances starting.
+The redirection to the failover IP address can be achieved in either of two ways:
 
-    ![Multiple instances running and in the creating state for the VM scale set.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image107.png "Instance status")
+- Update the DNS record for the user endpoint to point to the new IP address. This update can be implemented using Azure Traffic Manager.
+- Direct users to a proxy service and have that service forward traffic to the currently active endpoint. Azure Front Door provides such a service.
 
-### Task 2: Validate SQL Always On
+In this task, you will use the Front Door approach to configure a highly available endpoint that directs traffic to your primary or secondary site, depending on which site is currently available.
 
-1.  Within the Azure portal, click on Virtual Machines and open **SQLVM-1.** Click **Stop** at the top of the blade to shut the virtual machine off.
+1. You will now build a Front Door to direct traffic to your Primary and Secondary Sites. From the Azure portal, select **+Create a resource**, then search for and select **Front Door and CDN profiles**. Select **Create**.
 
-2.  After the VM is deallocated, refresh the CloudShop application in your browser. If the page loads with data in the dropdown list SQL has successfully failed over the primary node to the secondary. You can login to the secondary vm (SQLVM-2) and connect via SQL Server Management Studio to confirm.
+    ![Icon for Azure Front Door.](images/dr-fd-icon.png "Azure Front Door icon")
 
-### Task 3: Validate backups are taken 
+2. Select **Azure Front Door** and **Custom create**. Then select **Continue to create a  Front Door**.
 
-1.  In the Azure portal, click All Services and search for Recovery Vault. Click the link and you should see the two recovery vaults created as part of the deployment of the Active Directory domain controllers.
+    ![Screenshot showing compare offerings with Azure Front Door and Custom create both selected.](images/dr-fd-offerings.png "Azure Front Door Compare Offerings")
 
-2.  Open each vault and validate that a backup of the VM has occurred
+3. Complete the **Basics** tab of the **Create a Front Door** blade using the following inputs, then select **Next: Secrets >**.
 
-    ![The screen shows 2 backup items from one of the vaults.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image109.png "Usage")
+    - **Resource group**: Use existing / **ContosoRG1**
+    - **Location**: Automatically assigned based on the region of **ContosoRG1**.
+    - **Profile name**: ContosoFD1
+    - **Tier**: Standard
 
-3.  To validate the SQL Server backup, open the Storage Account created earlier in the Azure portal and click **Blobs** -\> and then **backups**. If the backup has already completed, you will see the backup file in the container.
+    ![Fields in the Create a Front Door blade are set to the previously defined settings.](images/dr-fd-basics.png "Create Front Door 'basics' blade")
 
-    ![An image that depicts SQL Server backup data in an Azure Storage Account.](images/Hands-onlabstep-bystep-BuildingaresilientIaaSarchitectureimages/media/image110.png "Backup files in storage")
+4. Select **Next: Endpoint >**.
+
+5. Select **Add an endpoint** to set the hostname of Front Door. In the **Add an endpoint** pane, enter the following values, then select **Add**:
+
+    - **Endpoint name**: `contosoiaas`
+    - **Status**: Leave **Enable this endpoint** selected.
+
+    ![Fields in the Add a frontend host pane are set to the previously defined settings.](images/dr-fd-fe.png "Add a frontend host pane.")
+
+6. Under **Routes** select **+ Add a route**.
+
+   ![Create a front door profile with options to create Routes and Security policies. Add a route is highlighted.](images/dr-fd-addroute.png "Create a front door profile")
+
+7. Select **Add a new origin group**.
+
+   ![Under Origin group on the Add a new route screen, the link to Add a new origin group is highlighted.](images/dr-fd-addneworigingroup.png "Add a route")
+
+8. Give the new origin group the name of `ContosoOrigins`.
+
+9. Select **+ Add an origin**.
+
+   ![Under the Add an origin group pane, + Add an origin is highlighted.](images/dr-fd-addorigin.png "Add an origin group")
+
+10. For adding an origin, use the following values. Leave all other values set to their default. Then select Add.
+
+    - Name: `ContosoWebPrimary`
+    - Origin type: Public IP Address
+    - Host name: ContosoWebLBPrimaryIP
+    - Priority: 1
+
+    ![Screen shot showing the values entered into the Add an origin pane.](images/dr-fd-neworigin.png "Add an origin")
+
+11. Repeat step 10 and change the values to the following.
+
+    - Name: `ContosoWebSecondary`
+    - Origin type: Public IP Address
+    - Host name: ContosoWebLBSecondaryIP
+    - Priority: 2
+  
+12. Update **Interval (in seconds)** to 30. Click Add
+
+    ![Showing the completed Add an origin group pane with all fields filled out and ready to select add.](images/dr-fd-addorigingroup.png "Add an origin group to front door")
+
+13. Enter the following values in **Add a route**. Leave all other values as default. Select **Add**.
+
+    - **Name**: `ContosoRoute`
+    - **Accepted protocols**: HTTP only
+    - **Redirect**: Uncheck **Redirect all traffic to use HTTPS**.
+    - **Origin group**: Ensure **ContosoOrigins** is selected.
+    - **Forwarding protocol**: HTTP only
+
+    ![Screenshot showing the completed add a route pane with all correct values read to select Add.](images/dr-fd-addroutecomplete.png "Add a route to the origin route")
+
+14. Select **Review + Create**. Once validation has been completed, select **Create** to provision the Front Door service.
+
+    ![Create a front door profile screen completed and ready to create. Completed route and Review + Create are highlighted.](images/dr-fd-profile.png "Create a front door profile completed and ready to create")
+
+15. Navigate to the Azure Front Door resource. Select the **Frontend host** URL of Azure Front Door, and the Policy Connect web application will load. The web application is routing through the **ContosoWebLBPrimary** External Load Balancer configured in front of **WEBVM1** and **WEBVM2** running in the **Primary** Site in **ContosoRG1** resource group and connecting to the SQL AlwaysOn Listener at the same location.
+
+    ![The Frontend host link is selected from the Azure Front Door.](images/dr-fd.png "Frontend host link")
+
+    ![The Contoso Insurance PolicyConnect webpage displays from a Front Door URL.](images/dr-fd-app.png "Contoso Insurance PolicyConnect webpage")
+
+    > **Note**: Be sure to use **HTTP** to access the Azure Front Door **frontend host** URL. The lab configurations only support HTTP for Front Door since WebVM1 and WebVM2 are only set up for HTTP support, not HTTPS (no SSL\TLS).
+    > **Note**: If you get an "Our services aren't available right now" error (or a 404-type error) accessing the web application, then continue with the lab and come back to this later. Sometime this can take a ~10 minutes for the routing rules to publish before it's "live".
+    >
+    > If you continue to have this issue beyond 15 minutes, ensure that you are using the correct backend host header (Step 5) and using HTTP for both the routing rules and the health probes of the backend pools. (Step 4).
+    >
+    > ![Error shown displaying Our services aren't available right now.](images/image224-b.png "Error shown displaying Our services aren't available right now")
+
+## Exercise 3: Enable Backup for the Contoso application
+
+Duration: 30 minutes
+
+In this exercise, you will use Azure Backup to enable backup for the Contoso application. You will configure backup for the web tier VMs and the SQL Server database.
+
+### Task 1: Create the Azure Backup resources
+
+Azure Backup and Azure Site Recovery are implemented using the same Azure resource type, the Recovery Services Vault. However, for Azure Backup, the vault must be deployed to the same region as the resources being protected; in this case, the primary site is in Central US. In contrast, for Azure Site Recovery, the vault was deployed to the secondary region. In this task, you will create the vault in the primary region for use by Azure Backup.
+
+1. From the Azure portal, select **+Create a resource**, search for and select **Backup and Site Recovery**, and select **Create**.
+
+    ![Screenshot of the Backup and Site Recovery Screen with the Create button selected.](images/dr-srv-mktpl2.png "Backup and Site Recovery Screen Create Button")
+
+2. Complete the **Recovery Services Vault** blade using the following inputs, then select **Review and Create**, followed by **Create**:
+
+    - **Resource Group**: ContosoRG1
+    - **Name**: `BackupRSV`
+    - **Location**: *your primary region*
+
+    ![Azure portal screenshot showing the Create Recovery Services Vault blade, with the settings filled in as described.](images/bk-rsv.png "Create Recovery Services Vault")
+
+3. Once the deployment completes, navigate to the **BackupRSV** resource and select **Properties**.
+
+    ![Azure portal screenshot showing the properties blade of the Recovery Services Vault.](images/bk-prop.png "Recovery Services Vault properties")
+
+4. Under **Backup Configuration**, select **Update**. In the Backup Configuration blade, check that the storage replication type is set to **Geo-redundant** and set the Cross-Region Restore option to **Enable** then **Save** your changes and close the Backup Configuration panel.
+
+    ![Azure portal screenshot showing the backup properties blade of the Recovery Services Vault.](images/bk-config1.png "Recovery Services Vault backup properties")
+
+    > **Note**: This enables backups from the primary site to be restored in the DR site if required.
+
+5. Still in the BackupRSV Properties blade, under **Security Settings**, select **Update**. Under Soft Delete, select **Disabled**, then **Save** your changes and close the Security Settings panel.
+
+    ![Azure portal screenshot showing the security properties blade of the Recovery Services Vault.](images/backup-sec-config.png "Recovery Services Vault security properties")
+
+    > **Note**: In a production environment, you should leave Soft Delete enabled. However, it is better to disable this feature for this lab since leaving it enabled makes it more difficult to clean up your lab resources once the lab is complete.
+
+### Task 2: Enable Backup for the Web tier
+
+In this task, you will configure Azure Backup for the Web tier virtual machines. Of course, if the Web VMs are stateless, backup may not be required, so long as the VM image and/or application installation are protected.
+
+1. From the **BackupRSV** Recovery Services vault blade, under 'Getting Started', select **Backup**. Under 'Where is your workload running?', select **Azure**. Under 'What do you want to backup?', select **Virtual machine**. Then select **Backup**.
+
+    ![Azure portal screenshot showing the Getting Started - Backup blade of the Azure Portal, with Azure VMs selected.](images/bk-vm1.png "Backup VMs")
+
+2. On the 'Configure Backup' blade, Leave **Standard** selected and select **Create a new policy** and fill in the Create Policy blade as follows:
+
+    - **Policy name**: `WebVMPolicy`
+    - **Backup schedule**: Daily, 9:00 PM, UTC
+    - **Retain instant recovery snapshots for**: 2 day(s)
+    - **Retention of daily backup point**: Enabled, 180 days
+    - **Retention of weekly backup point**: Enabled, Sunday, 12 weeks
+    - **Retention of monthly backup point**: Enabled, First Sunday, 24 months
+    - **Retention of yearly backup point**: Enabled, day-based, January 1, 5 years
+    - **Azure Backup Resource Group**: ContosoBackupRG
+
+    When finished, select **OK**.
+
+    ![Azure portal screenshot showing the Backup Policy settings, completed as described.](images/bk-vm2.png "Backup Policy")
+
+3. On the 'Backup' blade, under 'Virtual Machines', select **Add**. Select the **WebVM1** and **WebVM2** virtual machines, then **OK**.
+
+    ![Azure portal screenshot showing the steps to add VMs to the backup.](images/bk-vm3.png "Add VMs")
+
+4. Select **Enable Backup** and wait for the deployment to complete.
+
+    ![Azure portal notification showing the VM backup deployment is complete.](images/bk-vm4.png "Backup deployment complete")
+
+5. From the **BackupRSV** Recovery Services vault blade, under 'Protected items', select **Backup items**. The blade should show 2 Azure VMs protected.
+
+    ![Azure portal screenshot showing how many protected items of various types are enabled. There are 2 Azure VMs protected.](images/bk-vm5.png "Backup items")
+
+6. Select **Azure Virtual Machine**. The 'Backup Items (Azure Virtual Machine' blade loads, listing **WebVM1** and **WebVM2**). In both cases, the 'Last Backup Status is 'Warning (Initial backup pending)'.
+
+    ![Azure portal screenshot showing WebVM1 and WebVM2 listed for backup, with initial backup pending.](images/bk-vm6.png "Backup items (Azure Virtual Machine)")
+
+7. Select **View details** for **WebVM1** to open the 'WebVM1' backup status blade. Select **Backup now**, leave the default backup retention and select **OK**.
+
+    ![Azure portal screenshot showing the WebVM1 backup status blade, with the 'Backup now' button highlighted.](images/bk-vm7.png "Backup now")
+
+    ![Azure portal screenshot of the backup retention period for the on-demand backup.](images/bk-vm8.png "Backup now - retention")
+
+    >**Note**: The backup policy created earlier determines the retention period for scheduled backups. For on-demand backups, the retention period is specified separately.
+
+8. Close the WebVM1 backup status blade. Then, repeat the above step to trigger an on-demand backup for **WebVM2**.
+
+9. From the **BackupRSV** Recovery Services vault blade, under 'Monitoring', select **Backup Jobs** to load the Backup Jobs blade. This blade shows the current status of each backup job. The blade should show two completed jobs (configuring backup for WebVM1 and WebVM2) and two in-progress jobs (backup for WebVM1 and WebVM2).
+
+    ![Azure portal screenshot showing the backup jobs.](images/bk-vm9.png "Backup Jobs")
+
+10. Select **View Details** for **WebVM1** to open the backup job view. This backup job view shows the detailed status of the tasks within the backup job.
+
+    ![Azure portal screenshot showing the WebVM1 backup job detailed status. The 'Take snapshot' task is 'In progress', and the 'Transfer data to vault' task is 'Not started'.](images/bk-vm10.png "Backup Job - WebVM1")
+
+    > **Note**: To restore from a backup, it suffices that the 'Take Snapshot' task is complete. Transferring the data to the vault does not need to be complete since recent backups can be restored from the snapshot.
+
+    You can proceed to the next task without waiting for the backup jobs to complete.
+
+### Task 3: Enable Backup for the SQL Server tier
+
+In this task, you will configure backup for the SQL Server database.
+
+There are two approaches to backup for SQL Server running on Azure VMs. One uses native SQL managed backup to Azure storage. The other uses Azure Backup. For this lab, you will use Azure Backup.
+
+Before enabling Azure Backup, you will first register the SQL Server VMs with the SQL VM resource provider. This resource provider installs the **SqlIaaSExtension** onto the virtual machine. Azure Backup uses this extension to configure the `NT SERVICE\AzureWLBackupPluginSvc` account with the necessary permissions to discover databases on the virtual machine.
+
+1. In a new browser tab, navigate to [https://shell.azure.com](https://shell.azure.com) and open a **PowerShell** session.
+
+2. Unless you have done so previously, you will need to register your Azure subscription to use the `Microsoft.SqlVirtualMachine` resource provider. In the Cloud Shell window, execute the following command:
+
+    ```PowerShell
+    Register-AzResourceProvider -ProviderNamespace Microsoft.SqlVirtualMachine
+    ```
+
+    ![Azure Cloud Shell screenshot showing the Microsoft.SqlVirtualMachine resource provider registration. The status is 'Registering'.](images/bk-sql-rp1a.png "Register resource provider")
+
+    > **Note**: It may take several minutes to register the resource provider. Wait until the registration is complete before proceeding to the next step. You can check the registration status using `Get-AzResourceProvider -ProviderNamespace Microsoft.SqlVirtualMachine`.
+
+3. Register **SQLVM1** with the resource provider by executing the following command in the Cloud Shell window. Ensure that **-Location** matches the location SQLVM1 is deployed.
+
+    ```PowerShell
+    New-AzSqlVM -Name 'SQLVM1' -ResourceGroupName 'ContosoRG1' -SqlManagementType Full -Location 'Central US' -LicenseType PAYG
+    ```
+
+    ![Azure Cloud Shell screenshot showing the SQL Virtual Machine resource being created for SQLVM1.](images/bk-sql-rp2.png "Register resource provider")
+
+    > **Note**: This will register the resource provider using the `Full` management mode. This change causes the SQL service to restart, which may impact production applications. To avoid this restart in production environments, you can alternatively register the resource provider in `LightWeight` mode and upgrade later during a scheduled maintenance window.
+
+4. Register **SQLVM2** and **SQLVM3** with the resource provider using the following commands. Ensure you specify the correct locations.
+
+    ```PowerShell
+    New-AzSqlVM -Name 'SQLVM2' -ResourceGroupName 'ContosoRG1' -SqlManagementType Full -Location 'Central US' -LicenseType PAYG
+    New-AzSqlVM -Name 'SQLVM3' -ResourceGroupName 'ContosoRG2' -SqlManagementType Full -Location 'East US 2' -LicenseType PAYG
+    ```
+
+    > **Note**: This lab uses SQL Server under a 'Developer' tier license. When using SQL Server in production at the 'Standard' or 'Enterprise' tier, you can specify `DR` as the license type for failover servers (each full-price server includes a license for 1 DR server). The DR license type reduces your licensing cost significantly. Check the SQL Server licensing documentation for full details.
+
+5. In the Azure portal, navigate to the **ContosoRG1** resource group. In addition to the SQLVM1 and SQLVM2 virtual machines, there are now parallel SQLVM1 and SQLVM2 resources of type 'SQL virtual machine' These additional resources provide additional management capabilities for SQL Server in Azure virtual machines.
+
+    ![Azure portal screenshot showing the SQLVM1 and SQLVM2 SQL virtual machine resources.](images/bk-sql-rp3.png "SQL virtual machine resources")
+
+6. Select the **SQLVM1** virtual machine (the standard VM resource, not the SQL virtual machine resource). Then select **Extensions**. Note that the **SqlIaaSExtension** has been installed on the virtual machine.
+
+    ![Azure portal screenshot showing the SqlIaaSExtension has been deployed to SQLVM1.](images/bk-sql-rp4.png "SqlIaaSExtension")
+
+    With the SQL virtual machine resources created and the SQL IaaS extension installed, you can now configure Azure Backup for virtual machines.
+
+7. In the Azure portal, navigate to the **BackupRSV** Recovery Services Vault resource in **ContosoRG1**. Under 'Getting started', select **Backup**. Under 'Where is your workload running?', select **Azure**. Under 'What do you want to backup?', select **SQL Server in Azure VM**. Then select **Start Discovery**.
+
+   ![Azure portal screenshot showing the Getting Started - Backup blade of the Azure Portal, with 'SQL Server in Azure VM' selected.](images/bk-sql1.png "Backup SQL Server in Azure VM")
+
+8. In the 'Select Virtual Machines' blade, select **SQLVM1** and **SQLVM2**, then select **Discover DBs**.
+
+    ![Azure portal screenshot showing the 'Select Virtual Machines' step of enabling backup for SQL Server in Azure VMs. SQLVM1 and SQLVM2 are selected.](images/bk-sql2.png "Select VMs for SQL Server backup")
+
+9. This will trigger a deployment. Wait for the deployment to complete (this may take several minutes).
+
+    ![Azure portal screenshot showing the 'deployment succeeded' notification.](images/bk-sql3.png "Success notification")
+
+10. On the 'BackupRSV' blade, select **Configure Backup**.
+
+    ![Azure portal screenshot showing the Backup 'Getting Started' settings in the Recovery Services Vault, with 'Configure Backup' highlighted.](images/bk-sql4.png "Configure backup button")
+
+11. On the 'Backup' blade, select **Add**.
+
+    ![Azure portal screenshot showing the Backup 'Backup' settings for the SQL backup, with 'Add' highlighted.](images/bk-sql5.png "Add button")
+
+12. On the 'Select items to backup' blade, select the **\>** icon next to the `BCDRAOG\BCDRAOG` entry to show the databases. Note that the ContosoInsurance database is listed. Change the **AutoProtect** setting for BCDRAOG to **ON**, then select **OK**.
+
+    ![Azure portal screenshot showing available databases to backup. For the BCDRAOG Always On Availability Group, AutoProtect is set to 'ON'.](images/bk-sql6.png "Select items to backup")
+
+    > **Note**: Using AutoProtect backups up the current database and any future databases on this Always On Availability Group.
+    > 
+    > **Note**: You may also want to backup system databases on each of the SQL Servers.
+
+13. On the 'Backup' blade, note that **BCDRAOG\BCDRAOG** is now listed for backup. Leave the policy as the default `HourlyLogBackup` policy. Select **Enable Backup** and wait for the deployment to complete.
+
+    ![Azure portal screenshot showing the BCDRAOG database listed for backup and the HourlyLogBackup settings. The 'Enable Backup' button is highlighted.](images/bk-sql7.png "Enable Backup button")
+
+14. In the **BackupRSV** Recovery Service Vault, navigate to the **Backup Jobs** view. You should see a backup configuration job in progress for the ContosoInsurance database. (If this job does not show immediately, wait a minute and select **Refresh**.)
+
+    ![Azure portal screenshot showing the backup configuration job for the ContosoInsurance database.](images/bk-sql8.png "Backup configuration job")
+
+15. Wait for the backup configuration job to complete. Use the **Refresh** button to monitor progress. The configuration job will take several minutes.
+
+16. Select **Backup items**, then select **SQL in Azure VM**.
+
+    ![Screenshot showing the path to the SQL in Azure VMs in backup items in the Recovery Services Vault.](images/v-bk-sql1.png "Backup items")
+
+17. From the backup items list, note that the **contosoinsurance** database has status **Warning (Initial backup pending)**.
+
+    ![Azure portal screenshot showing the backup status for the contosoinsurance database.](images/bk-sql10.png "Backup status")
+
+18. Select **View details** on the **contosoinsurance** database and select **Backup now**
+
+    ![Azure portal screenshot showing the backup now button for the contosoinsurance database.](images/bk-sql11.png "Backup now")
+
+19. Review the default backup settings, then select **OK** to start the backup.
+
+    ![Azure portal screenshot showing the backup settings for the contosoinsurance database.](images/bk-sql12.png "Backup settings")
+
+20. The backup process starts. You can monitor progress from the **Backup Job** pane.
+
+    ![Azure portal screenshot showing the Backup Job for the contosoinsurance database.](images/bk-sql13.png "Database Backup Job")
+
+    > **Note**: You can continue to the next step in the lab without waiting for the backup job to complete.
+
+## Exercise 4: Validate resiliency
+
+Duration: 90 minutes
+
+This exercise will validate the high availability, disaster recovery, and backup solutions you have implemented in the earlier lab exercises.
+
+### Task 1: Validate High Availability
+
+In this task, we will validate high availability for both the Web and SQL tiers.
+
+1. In the Azure portal, open the **ContosoRG1** resource group. Select the public IP address for the web tier load-balancer, **ContosoWebLBPrimary**. Select the **Overview** tab, copy the DNS name to the clipboard, and navigate to it in a different browser tab.
+
+2. The Contoso application should load in your browser tab. Select **Current Policy Offerings** to view the policy list - this shows the database is accessible. As an additional check, edit an existing policy and save your changes to show that the database is writable.
+
+3. Open an Azure Bastion session with **SQLVM1** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica.
+
+   ![SQL Server Management Studio screenshot showing SQLVM1 as the primary replica.](images/v-sql1.png "SQLVM1 as Primary")
+
+4. Using the Azure portal, stop both **WebVM1** and **SQLVM1**. Wait a minute for the VMs to stop.
+
+5. Refresh the browser tab with the Contoso application. The application still works. Confirm again that the database is writable by changing one of the policies.
+
+6. Open an Azure Bastion session with **SQLVM2** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM2** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM2** as the primary replica, and there is a critical warning about **SQLVM1** not being available.
+
+   ![SQL Server Management Studio screenshot showing SQLVM2 as the primary replica, with warnings.](images/v-sql2.png "SQLVM2 as Primary")
+
+7. Restart **WebVM1** and **SQLVM1**. **Wait a full two minutes** for the VMs to start - **this is important**; we don't want to test simultaneous failover of SQLVM1 and SQLVM2 at this stage. Then stop **WebVM2** and **SQLVM2**.
+
+8. Refresh the blade with the Contoso application. The application still works. Confirm again that the database is writable by changing one of the policies.
+
+9. Re-open an Azure Bastion session with **SQLVM1** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica, and there is a critical warning about **SQLVM2** not being available.
+
+    ![SQL Server Management Studio screenshot showing SQLVM1 as the primary replica, with warnings.](images/v-sql1b.png "SQLVM1 as Primary")
+
+10. Re-start **SQLVM2** and **WebVM2**.
+
+### Task 2: Validate Disaster Recovery - Failover IaaS region to region
+
+In this task, you will validate the failover of the Contoso application from Central US to East US 2. The failover is orchestrated by Azure Site Recovery using the recovery plan you configured earlier. It includes the failover of both the web tier (creating new Web VMs from the replicated data) and the SQL Server tier (failure to the SQLVM3 asynchronous replica). The failover process is fully automated, with custom steps implemented using Azure Automation runbooks triggered by the Recovery Plan.
+
+1. Using the Azure portal, open the **ContosoRG1** resource group. Navigate to the Front Door resource, locate Frontend Host URL, and open it in a new browser tab. Navigate to it to ensure that the application is up and running from the Primary Site.
+
+    ![The Frontend host link is called out.](images/image318.png "Frontend host")
+
+    Keep this browser tab open; you will return to it later in the lab.
+
+2. From a new browser tab, open the Azure portal, then navigate to the **BCDRRSV** Recovery Services Vault located in the **ContosoRG2** resource group.
+
+3. Select **Recovery Plans (Site Recovery)** in the **Manage** area, then select **BCDRIaaSPlan**.
+
+    ![In the Recovery Services vault blade, BCDRIaaSPlan is selected in the Recovery Plans view.](images/v-dr1.png "Recovery Plans")
+
+4. Select **Failover**.
+
+    ![In the BCDRIaaSPlan blade, the Failover button is highlighted.](images/v-dr2.png "BCDRIaaSPlan blade")
+
+5. On the warning about No Test Failover, select **I understand the risk, Skip test failover**.
+
+    ![A warning displays that no test failover has been done in the past 180 days and recommends that you do one before a failover. At the bottom, the I understand and skip test failover checkbox is highlighted.](images/v-dr3.png "Failover warning")
+
+6. Review the Failover direction. Notice that **From** is the **Primary** site, and **To** is the **Secondary** site. Select **OK**.
+
+    ![Call outs in the Failover blade point to the From and To fields.](images/v-dr4.png "Failover blade")
+
+7. After the Failover is initiated, close the Failover blade and navigate to **Site Recovery Jobs**. Select the **Failover** job to monitor the progress.
+
+    ![Failover is selected in the Site Recover jobs blade.](images/v-dr5.png "Site Recover jobs blade")
+
+8. You can monitor the progress of the Failover from this panel.
+
+    ![Output is selected on the Job blade, and information displays in the Output blade.](images/v-dr6.png "Job and Output blades")
+
+    > **Note**: Do not make any changes to your VMs in the Azure portal during this process. Allow ASR to take the actions and wait for the failover notification before moving on to the next step. You can open another portal view in a new browser tab and review the output of the Azure Automation Jobs by opening the jobs and selecting Output.
+    >
+    > ![Screenshot of the ASRSQLFailover Azure Automation runbook job. The status of Zero warnings and zero errors is highlighted.](images/v-dr7.png "Automation Job status")
+
+9. Once the Failover job has finished, it should show as *Successful* for all tasks. The failover job may take more than 15 minutes.
+
+    ![Under the Site Recovery Job, the status for the job steps all show as successful.](images/v-dr8.png "Job status")
+
+10. Select **Resource groups** and select **ContosoRG1**. Open **WebVM1** and notice that it currently shows as **Status: Stopped (deallocated).** This shows that failover automation has stopped the VMs at the **Primary** site.
+
+    ![A call out points to the Status of Stopped (deallocated) in the Virtual machine blade. The VM location is Central US.](images/v-dr9.png "Virtual machine blade")
+
+    > **Note**: Do not select Start! The VM will be restarted automatically by ASR during failback.
+
+11. Move back to the Resource group and select the **ContosoWebLBPrimaryIP** Public IP address. Copy the DNS name and paste it into a new browser tab. The website will be unreachable at the Primary location since the Web VMs at this location have been stopped by ASR during failover.
+
+12. In the Azure portal, move to the **ContosoRG2** resource group. Locate the **WebVM1** in the resource group and select to open. Notice that **WebVM1** is running on the **Secondary** site.
+
+    ![In the Virtual Machine blade, a call out points to the status of WebVM1, which is now running.](images/v-dr10.png "Virtual Machine blade")
+
+13. Move back to the **ContosoRG2** resource group and select the **ContosoWebLBSecondaryIP** Public IP address. Copy the DNS name and paste it into a new browser tab. The Contoso application is now responding from the **Secondary** site. Make sure to select the current Policy Offerings to ensure connectivity to the SQL Always-On group that was also failed over in the background.
+
+14. Return to the browser tab pointing to the Contoso application at the Front Door URL. Refresh the page. The site loads immediately from the DR site. Web site users accessing the service via Front Door are automatically routed to the currently available site, so there is no change in how they access the site even though it is failed over. There **will** be downtime as the failover happens, but once the site is back online, their experience will be no different from when it is running in the **Primary** site.
+
+    ![The Contoso Insurance PolicyConnect webpage displays. The URL is from Azure Front Door.](images/dr-fd-app.png "Contoso Insurance PolicyConnect webpage")
+
+    > **Optional task**: You can log in to **SQLVM3** and open the SQL Management Studio to review the Failed over **BCDRAOG**. You will see that **SQLVM3**, which is running in the **Secondary** site, is now the Primary Replica.
+
+15. Now that you have successfully tested failover, you need to configure ASR for failback. Move back to the **BCDRSRV** Recovery Service Vault using the Azure portal. Select **Recovery Plans** on the ASR dashboard. The **BCDRIaaSPlan** will show as **Failover completed.**
+
+    ![Recovery Plans list, with the 'Failover Completed' status of the BCDRIaaSPlan highlighted.](images/v-dr11.png "Recovery Plans")
+
+16. Select the BCDRIaasPlan plan. Notice that two (2) VMs are now shown in the **Target** tile.
+
+    ![In the Recovery blade, the Target tile has the number 2.](images/v-dr12.png "Recovery plan blade")
+
+17. Select **Re-protect**.
+
+    ![Recovery Plan blade with Re-protect button highlighted.](images/v-dr13.png "Re-protect button")
+
+18. On the **Re-protect** screen, review the configuration and select **OK**.
+
+    ![Screenshot of the Re-protect blade.](images/v-dr14.png "Re-protect blade")
+
+19. The portal will submit a deployment. This process will take up to 30 minutes to commit the failover and then synchronize WebVM1 and WebVM2 with the Recovery Services Vault. Once this process is complete, you will be able to failback to the primary site.
+
+    > **Note**: You need to wait for the re-protect process to complete before continuing with the failback. You can check the status of the Re-protect using the Site Recovery Jobs area of the BCDRSRV.
+    >
+    > ![In the Recovery blade, Re-protect has a status of In progress for two jobs, one for WebVM1 and one for WebVM2.](images/v-dr15.png "Site Recovery jobs")
+    >
+    > Once the jobs are completed, move to the **Replicated items** blade and wait for the **Status** to show as **Protected**. This status shows the data synchronization is complete, and the Web VMs are ready to failback.
+    >
+    > ![In the Replicated items, WebVM1 and WebVM2 have status 'Protected'.](images/v-dr16.png "Replicated items")
+
+### Task 3: Validate Disaster Recovery - Failback IaaS region to region
+
+In this task, you will failback the Contoso application from the DR site in your secondary region back to the primary site (your primary region).
+
+1. Still in the **BCDRRSV** Recovery Services vault, select **Recovery Plans** and re-open the **BCDRIaaSPlan**. Notice that the VMs are still at the Target since they failed over to the secondary site.
+
+2. Select **Failover**. At the warning about No Test Failover, select **I understand the risk, Skip test failover**. Notice that **From** is the **Secondary** site and **To** is the **Primary** site. Select **OK**.
+
+    ![Screenshot of the Failover blade, from East US 2 to Central US.](images/v-dr17.png "Failover (failback)")
+
+3. After the Failover is initiated, close the blade and select **Site Recovery Jobs**, then select the **Failover** job to monitor the progress. Once the job has finished, it should show as successful for all tasks.
+
+    ![Under Job, the list of all jobs have a status of successful.](images/v-dr18.png "Job status")
+
+4. Confirm that the Contoso application is once again accessible via the **ContosoWebLBPrimaryIP** public IP address and is **not** available at the **ContosoWebLBSecondaryIP** address. This test shows it has returned to the primary site. Open the **Current Policy Offerings** and edit a policy to confirm database access.
+
+    > **Note**: If you get an "Our services aren't available right now" error (or a 404-type error) accessing the web application, verify that you are utilizing the **ContosoWebLBPrimaryIP**. If it does not come up within ~10 minutes, verify that the backend system is responding.
+
+5. Confirm that the Contoso application is also available via the Front Door URL.
+
+6. Now that you have successfully failed back, you need to prep ASR for the Failover again. Move back to the **BCDRSRV** Recovery Service Vault using the Azure portal. Select Recovery Plans and open the **BCDRIaaSPlan**.
+
+7. Notice that now 2 VMs are shown in the **Source**. Select **Re-protect**, review the configuration, and select **OK**.
+
+    ![The recovery plan shows 2 VMs in the Source and 0 in the target. The 'Re-protect' button is highlighted.](images/v-dr19.png "BCDRIaaSPlan")
+
+8. As previously, the portal will submit a deployment. This process will take some time. You can proceed with the lab without waiting.
+
+9. Next, you need to reset the SQL Always On Availability Group environment to ensure a proper failover. Use Azure Bastion to connect to **SQLVM1** with username `demouser@contoso.com` and password `Demo!pass123`.
+
+10. Once connected to **SQLVM1**, open SQL Server Management Studio and Connect to **SQLVM1**. Expand the **Always On Availability Group**s and then right-click on **BCDRAOG** and select **Show Dashboard**.
+
+11. Notice that all the Replica partners are now Synchronous Commit with Automatic Failover Mode. You need to manually reset **SQLVM3** to be **Asynchronous** with **Manual Failover**.
+
+    ![The Availability group dashboard displays with SQLVM3 and its properties called out.](images/image400.png "Availability group dashboard")
+
+12. Right-click the **BCDRAOG** and select **Properties**.
+
+    ![In Object Explorer, the right-click menu for BCDRAOG displays with Properties selected.](images/image401.png "Object Explorer")
+
+13. Change **SQLVM3** to **Asynchronous** and **Manual Failover** and select **OK**.
+
+    ![In the Availability Group Properties window, under Availability Replicas, the SQLVM3 server role is secondary, availability mode is asynchronous commit, and failover mode is manual.](images/image402.png "Availability Group Properties window")
+
+14. Show the Availability Group Dashboard again. Notice that the change has been made and that the AOG is now reset.
+
+    ![The Availability group dashboard displays with SQLVM3 and its properties called out.](images/image403.png "Availability group dashboard")
+
+    > **Note**: This task could have been done using the Azure Automation script during Failback, but most DBAs would prefer a clean failback and then do this manually once they are comfortable with the failback.
+
+### Task 4: Validate VM Backup
+
+In this task, you will validate the backup for the Contoso application WebVMs. You will do this by removing several image files from **WebVM1**, breaking the Contoso application. You will then restore the VM from backup.
+
+1. From the Azure portal, locate and shut down **WebVM2**. This forces all traffic to be served by **WebVM1**, making the backup/restore verification easier.
+
+2. Navigate to **WebVM1** and connect to the VM using Azure Bastion, using username `demouser@contoso.com` and password `Demo!pass123`.
+
+3. Open Windows Explorer and navigate to the `C:\inetpub\wwwroot\Content` folder. Select the three `.PNG` files and delete them.
+
+    ![Windows Explorer is used to delete PNG files from the Contoso application.](images/v-bk-web1.png "Delete PNG files")
+
+4. In the Azure portal, locate the **ContosoWebLBPrimaryIP** public IP address in **ContosoRG1**. Copy the DNS name and open it in a new browser tab. Hold down `CTRL` and refresh the browser to reload the page without using your local browser cache. The Contoso application should be shown with images missing.
+
+    ![Browser screenshot showing the Contoso application with missing images highlighted.](images/v-bk-web2.png "Contoso application with missing images")
+
+5. To restore WebVM1 from backup, Azure Backup requires that a 'staging' storage account be available. To create this account, in the Azure portal, select **+ Create a resource**, then search for and select **Storage account**. Select **Create**.
+
+6. Complete the 'Create storage account' form as follows, then select **Review + Create** followed by **Create**.
+
+    - **Resource group:** ContosoRG1
+    - **Storage account name:** Unique name starting with `backupstaging`.
+    - **Location:** *your primary region*
+    - **Performance:** Standard
+    - **Replication:** Locally-redundant storage (LRS)
+
+    ![Screenshot showing the 'Create storage account' blade in the Azure portal.](images/v-bk-web3.png "Create storage account")
+
+7. Before restoring a VM, the existing VM must be shut down. Use the Azure portal to shut down **WebVM1**.
+
+    > **Note**: since WebVM2 is also shut down, this will break the Contoso application. In a real-world scenario, you would keep WebVM2 running while restoring WebVM1.
+
+8. In the Azure portal, navigate to the **BackupRSV** Recovery Services Vault. Under 'Protected Items', select **Backup items**, then select **Azure Virtual Machine**.
+
+    ![Screenshot showing the Recovery Services Vault with the links to the Azure Virtual Machine backup item highlighted.](images/v-bk-web4.png "Backup items")
+
+9. On the Backup items page, select **View details** for **WebVM1**. On the **WebVM1** page, select **RestoreVM**.
+
+    ![Screenshot showing the WebVM1 backup status page, with the 'Restore VM' button highlighted.](images/v-bk-web5.png "Restore VM button")
+
+10. Complete the Restore Virtual Machine page as follows, then select **Restore**.
+
+    - **Restore point**: Select the most recent restore point.
+    - **Restore Configuration**: Replace existing
+    - **Staging Location**: Choose the storage account you created earlier, starting with `backupstaging`.
+
+    ![Screenshot showing settings to restore WebVM1, replacing the existing VM.](images/v-bk-web6.png "Restore VM options")
+
+11. In the **BackupRSV** vault, navigate to the **Backup Jobs** view. Note that two new jobs are shown as 'In progress', one to take a backup of the VM and a second to restore the VM.
+
+    ![Screenshot showing both backup and restore jobs for WebVM1.](images/v-bk-web7.png "Restore VM Backup Jobs")
+
+12. It will take several minutes for the VM to be restored. Wait for the restore to complete before proceeding with the lab.
+
+13. Once the restore operation is complete, navigate to the **WebVM1** blade in the Azure portal and **Start** the VM.
+
+14. Wait for the VM to start, then return to your browser tab showing the Contoso application with missing images. Hold down `CTRL` and select **Refresh** to reload the page. The application is displayed with the images restored, showing the restore from backup has been successful. (As an optional step, you can also open a Bastion connection to the VM and check the deleted .PNG files have been restored.)
+
+15. Start **WebVM2**.
+
+### Task 5: Validate SQL Backup
+
+In this task, you will validate the ability to restore the Contoso application database from Azure Backup.
+
+1. In the Azure portal, navigate to the **BackupRSV** in **ContosoRG1**. Under 'Protected items', select **Backup items**, then select **SQL in Azure VM**.
+
+    ![Screenshot showing the path to the SQL in Azure VMs in backup items in the Recovery Services Vault.](images/v-bk-sql1.png "Backup items")
+
+2. From the backup items list, select **View details** for the **contosoinsurance** database.
+
+3. From the **contosoinsurance** blade, select **Restore**.
+
+    ![Screenshot showing the restore button for the contosoinsurance database backup.](images/v-bk-sql2.png "Restore button")
+
+4. Review the default settings on the **Restore** blade. By default, the backup will be restored to a new database alongside the existing database on SQLVM1.
+
+    ![Screenshot showing the settings to restore a SQL database from Azure Backup.](images/v-bk-sql3.png "Restore database settings")
+
+    > **Note**: For an Always On Availability Group backup, the option to overwrite the existing database is not available. You must restore to a parallel location.
+
+5. Select the option to choose your Restore Point. On the 'Select restore point' blade, explore the restore options. Note how the log-based option offers a point-in-time restore, whereas the full & differential option provides backup based on the backup schedule.
+
+    Choose any restore point and select **OK**.
+
+    ![Screenshot showing the options to select a restore point based on logs.](images/v-bk-sql4.png "Select restore point - Logs")
+
+    ![Screenshot showing the options to select a restore point based on scheduled backups.](images/v-bk-sql5.png "Select restore point - Full & Differential")
+
+6. Under 'Advanced Configuration', select **Configure**. Review the settings but don't change anything. Select **OK** to accept the default configuration
+
+7. Select **OK** to start the restore process.
+
+8. Navigate to the **Backup Jobs** view. The ContosoInsurance job is 'In progress'. Use the **Refresh** button to monitor the progress and wait for the job to complete.
+
+    ![Screenshot showing the list of backup jobs with the database restore highlighted.](images/v-bk-sql6.png "Database restore backup job")
+
+9. Navigate to **SQLVM1** and connect to the VM using Azure Bastion, using username `demouser@contoso.com` and password `Demo!pass123`.
+
+10. On SQLVM1, open **SQL Server Management Studio** and connect to SQLVM1.
+
+11. Note that the restored database is present alongside the production database on the server.
+
+    ![Screenshot showing the restored database in SQL Server Management Studio.](images/v-bk-sql7.png "Restored database")
+
+    > **Note**: You can now either copy data from the restored database to the production database or add this database to the Always On Availability Group and switch the Web tier to use the restored database.
 
 ## After the hands-on lab
 
-### Task 1: Delete the resource groups created
+### Task 1: Delete the lab resources
 
-1.  Within the Azure portal, click Resource Groups on the left navigation
+1. Within the Azure portal, select Resource Groups on the left navigation.
 
-2.  Delete each of the resource groups created in this lab by clicking them followed by clicking the Delete Resource Group button. You will need to confirm the name of the resource group to delete.
+2. To delete the Recovery Services Vaults, you will first need to open the vaults, disable all VM backup and replication and delete any backup and replicated data.
 
-You should follow all steps provided *after* attending the hands-on lab.
+3. Delete each of the resource groups created in this lab by selecting them, followed by the **Delete resource group** button. You will need to confirm the name of the resource group to delete.
 
+You should follow all steps provided ***after*** attending the hands-on lab.
