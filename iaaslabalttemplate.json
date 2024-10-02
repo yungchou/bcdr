@@ -3,8 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "adminUsername": {
-            "type": "string"
-,
+            "type": "string",
             "defaultValue": "adadmin",
             "metadata": {
                 "description": "The name of the administrator account of the new VM and domain"
@@ -18,24 +17,21 @@
             }
         },
         "domainName": {
-            "type": "string"
-,
+            "type": "string",
             "defaultValue": "contoso.ins",
             "metadata": {
                 "description": "The FQDN of the Active Directory Domain"
             }
         },
         "PrimaryRG": {
-            "type": "string"
-,
+            "type": "string",
             "defaultValue": "ContosoRG2",
             "metadata": {
                 "description": "Resource group name of the primary region (must already exist)"
             }
         },
         "SecondaryRG": {
-            "type": "string"
-,
+            "type": "string",
             "defaultValue": "ContosoRG3",
             "metadata": {
                 "description": "Resource group name of the secondary region (must already exist)"

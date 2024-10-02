@@ -4,16 +4,14 @@
 	"parameters": {
 		"skuSizeVM": {
 			"defaultValue": "E2bds_v5",
-			"type": "string"
-,
+			"type": "string",
 			"metadata": { "description": "Size of Virtual Machines to use" },
 			"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 		 },
 		"adminUsername": {
 			"defaultValue": "adadmin",
 			"minLength": 1,
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Username for the Virtual Machine."
 			}

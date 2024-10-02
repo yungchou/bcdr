@@ -3,29 +3,25 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"WebLBDnsLabelPrefix": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "ci-",
 			"minLength": 1
 		},
 		"Environment": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Name of environment (e.g. 'Primary' or 'Secondary')"
 			},
 			"minLength": 1
 		},
 		"DataSubnetId": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Subnet Id of the data tier"
 			}
 		},
 		"SQLLBPrivateIPAddress": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Private IP address for SQL load-balancer frontend"
 			}

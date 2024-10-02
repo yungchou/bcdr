@@ -4,14 +4,12 @@
 	"parameters": {
 		"skuSizeVM": {
 			"defaultValue": "E2bds_v5",
-			"type": "string"
-,
+			"type": "string",
 			"metadata": { "description": "Size of Virtual Machines to use" },
 			"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 		 },
 		"adminUsername": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "adadmin",
 			"metadata": {
 				"description": "The name of the administrator account of the new VM and domain"
@@ -25,36 +23,39 @@
 			}
 		},
 		"domainName": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "contoso.ins",
 			"metadata": {
 				"description": "The FQDN of the Active Directory Domain to be created"
 			}
 		},
+		"vnetName": {
+			"type": "string",
+			"defaultValue": "[concat(resurceGroup().location,'-175')]",
+			"metadata": {
+				"description": "Existing DNS server in Virtual Network"
+			}
+		},
 		"existingDNSServer": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "10.175.3.100",
 			"metadata": {
 				"description": "Existing DNS server in Virtual Network"
 			}
 		},
 		"baseUri": {
-			"type": "string"
-,
+			"type": "string",
 						"defaultValue": "https://raw.githubusercontent.com/yungchou/bcdr/"
 
 
 		},
 		"resourceFolder": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "main/Hands-on%20lab/Resources/"
 		}
 	},
 	"variables": {
-		"vnetName": "vnet175",
+		"vnetName": "[parameters('vnetName')]",
 		"AppsSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), 'Apps')]",
 		"DataSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), 'Data')]",
 		"ADSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), 'Identity')]"

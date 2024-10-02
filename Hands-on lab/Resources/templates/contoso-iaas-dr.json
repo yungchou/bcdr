@@ -4,14 +4,12 @@
 	"parameters": {
 		"skuSizeVM": {
 			"defaultValue": "E2bds_v5",
-			"type": "string"
-,
+			"type": "string",
 			"metadata": { "description": "Size of Virtual Machines to use" },
 			"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 		 },
 		"adminUsername": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "adadmin",
 			"metadata": {
 				"description": "The name of the administrator account of the new VM and domain"
@@ -25,8 +23,7 @@
 			}
 		},
 		"domainName": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "contoso.ins",
 			"metadata": {
 				"description": "The FQDN of the Active Directory Domain"
@@ -44,8 +41,7 @@
 			"defaultValue": "[concat(resourceGroup().location,'-175')]"
 		},
 		"SecondaryRG": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "ci-w3",
 			"metadata": {
 				"description": "Existing resource group name of the secondary region"

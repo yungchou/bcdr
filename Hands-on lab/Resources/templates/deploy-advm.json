@@ -4,42 +4,36 @@
 	"parameters": {
 		"skuSizeVM": {
 			"defaultValue": "E2bds_v5",
-			"type": "string"
-,
+			"type": "string",
 			"metadata": { "description": "Size of Virtual Machines to use" },
 			"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 		},
 		"ADVMName": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "The name of the domain controller VM to create"
 			}
 		},
 		"AvailabilityZone": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Availability zone to deploy to"
 			}
 		},
 		"ADSubnetId": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Id of the subnet to deploy the AD VM to"
 			}
 		},
 		"ADVMPrivateIPAddress": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Private IP address for the AD VM"
 			}
 		},
 		"adminUsername": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "adadmin",
 			"metadata": {
 				"description": "The name of the administrator account of the new VM and domain"
@@ -53,8 +47,7 @@
 			}
 		},
 		"domainName": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "contoso.ins",
 			"metadata": {
 				"description": "The FQDN of the Active Directory domain"
@@ -68,13 +61,11 @@
 			}
 		},
 		"resourceFolder": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "main/Hands-on%20lab/Resources/"
 		},
 		"baseUri": {
-			"type": "string"
-,
+			"type": "string",
 									"defaultValue": "https://raw.githubusercontent.com/yungchou/bcdr/"
 
 
@@ -220,13 +211,11 @@
 	],
 	"outputs": {
 		"ADVM1PrivateIP": {
-			"type": "string"
-,
+			"type": "string",
 			"value": "[parameters('ADVMPrivateIPAddress')]"
 		},
 		"DomainName": {
-			"type": "string"
-,
+			"type": "string",
 			"value": "[parameters('domainName')]"
 		}
 	}

@@ -3,15 +3,13 @@
 	"contentVersion": "1.0.0.0",
 	"parameters": {
 		"VNet1Id": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "First VNet resource Id, starting with /subscriptions/..."
 			}
 		},
 		"VNet2Id": {
-			"type": "string"
-,
+			"type": "string",
 			"metadata": {
 				"description": "Second VNet resource Id, starting with /subscriptions/..."
 			}
@@ -30,8 +28,7 @@
 						}
 					],
 					"output": {
-						"type": "string"
-,
+						"type": "string",
 						"value": "[split(parameters('resourceId'), '/')[4]]"
 					}
 				},
@@ -44,8 +41,7 @@
 						}
 					],
 					"output": {
-						"type": "string"
-,
+						"type": "string",
 						"value": "[split(parameters('resourceId'), '/')[8]]"
 					}
 				},
@@ -63,8 +59,7 @@
 						}
 					],
 					"output": {
-						"type": "string"
-,
+						"type": "string",
 						"value": "[concat(split(parameters('VNet1Id'), '/')[8], '-to-', split(parameters('VNet2Id'), '/')[8])]"
 					}
 				}
