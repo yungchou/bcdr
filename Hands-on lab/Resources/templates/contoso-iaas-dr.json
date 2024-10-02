@@ -55,10 +55,6 @@
 			"type": "string", 
 			"defaultValue": "westus3-228"
 		},
-		"PeeringName": {
-			"type": "string",
-			"defaultValue": "uniquePeeringName"
-		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",
 			"defaultValue": "10.228.3.100"
@@ -86,8 +82,7 @@
 		"DNSIPsOfPrimaryVnet": "[parameters('DNSIPsOfPrimaryVnet')]",
 		"ADVM3PrivateIPAddress": "[parameters('ADVM3PrivateIPAddress')]",
 		"ADVM4PrivateIPAddress": "[parameters('ADVM4PrivateIPAddress')]",
-		"SecondarySQLLBPrivateIPAddress": "[parameters('SecondarySQLLBPrivateIPAddress')]",
-		"PeeringName": "[parameters('PeeringName')]"
+		"SecondarySQLLBPrivateIPAddress": "[parameters('SecondarySQLLBPrivateIPAddress')]"
 	},
 	"resources": [
 		{
@@ -111,7 +106,7 @@
 			}
 		},
 		{
-			"name": "[variables('PeeringName')]",
+			"name": "Peering",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
 			"dependsOn": [
@@ -139,7 +134,7 @@
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
 			"resourceGroup": "[parameters('SecondaryRG')]",
-			"dependsOn": [ "[variables('PeeringName')]" ],
+			"dependsOn": [ "Peering" ],
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
