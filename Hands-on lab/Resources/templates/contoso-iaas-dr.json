@@ -33,36 +33,40 @@
 			}
 		},
 		"PrimaryRG": {
-			"type": "string"
-,
-			"defaultValue": "ContosoRG1",
+			"type": "string",
+			"defaultValue": "ci-w2",
 			"metadata": {
-				"description": "Resource group name of the primary region (must already exist)"
+				"description": "Existing resource group name of the primary region"
 			}
+		},
+		"vnetNamePrimary": {
+			"type": "string", 
+			"defaultValue": "[concat(resourceGroup().location,'-175')]"
 		},
 		"SecondaryRG": {
 			"type": "string"
 ,
-			"defaultValue": "ContosoRG2",
+			"defaultValue": "ci-w3",
 			"metadata": {
-				"description": "Resource group name of the secondary region (must already exist)"
+				"description": "Existing resource group name of the secondary region"
 			}
+		},
+		"vnetNameSecondaryToBeCreated": {
+			"type": "string", 
+			"defaultValue": "2ndRegion-228"
 		},
 		"baseUri": {
 			"type": "string",
 			"defaultValue": "https://raw.githubusercontent.com/yungchou/bcdr/"
-
-
 		},
 		"resourceFolder": {
-			"type": "string"
-,
+			"type": "string",
 			"defaultValue": "main/Hands-on%20lab/Resources/"
 		}
 	},
 	"variables": {
-		"vnetNamePrimary": "vnet175",
-		"vnetNameSecondary": "vnet228"
+		"vnetNamePrimary": "[parameters('vnetNamePrimary')]",
+		"vnetNameSecondary": "[parameters('vnetNameSecondaryToBeCreated')]"
 	},
 	"resources": [
 		{

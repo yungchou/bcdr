@@ -46,7 +46,7 @@
 		}
 	},
 	"variables": {
-		"vnetName": "vnet175"
+		"vnetName": "[concat(resourceGroup().location,'-175')]"
 	},
 	"resources": [
 		{
