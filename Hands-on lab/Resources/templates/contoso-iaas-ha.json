@@ -2,6 +2,13 @@
 	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"vnetName": {
+			"type": "string",
+			"defaultValue": "[concat(resourceGroup().location,'-175')]",
+			"metadata": {
+				"description": "Existing vnet for deploying resources"
+			}
+		},
 		"skuSizeVM": {
 			"defaultValue": "E2bds_v5",
 			"type": "string",
@@ -29,13 +36,6 @@
 				"description": "The FQDN of the Active Directory Domain to be created"
 			}
 		},
-		"vnetName": {
-			"type": "string",
-			"defaultValue": "[concat(resurceGroup().location,'-175')]",
-			"metadata": {
-				"description": "Existing DNS server in Virtual Network"
-			}
-		},
 		"existingDNSServer": {
 			"type": "string",
 			"defaultValue": "10.175.3.100",
@@ -46,8 +46,6 @@
 		"baseUri": {
 			"type": "string",
 						"defaultValue": "https://raw.githubusercontent.com/yungchou/bcdr/"
-
-
 		},
 		"resourceFolder": {
 			"type": "string",
@@ -114,8 +112,7 @@
 			"name": "LoadBalancers",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2016-09-01",
-			"dependsOn": [
-			],
+			"dependsOn": [],
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
@@ -165,8 +162,7 @@
 			"name": "WebVM2",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2016-09-01",
-			"dependsOn": [
-			],
+			"dependsOn": [],
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
@@ -214,8 +210,7 @@
 			"name": "SQLVM2",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2016-09-01",
-			"dependsOn": [
-			],
+			"dependsOn": [],
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
