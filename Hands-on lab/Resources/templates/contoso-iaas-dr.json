@@ -161,7 +161,7 @@
 						"value": "[parameters('resourceFolder')]"
 					},
 					"ADVMName": {
-						"value": "ADVM3"
+						"value": "ci-DC3"
 					},
 					"AvailabilityZone": {
 						"value": "1"
@@ -212,7 +212,7 @@
 						"value": "[parameters('resourceFolder')]"
 					},
 					"ADVMName": {
-						"value": "ADVM4"
+						"value": "ci-DC4"
 					},
 					"AvailabilityZone": {
 						"value": "2"
@@ -317,7 +317,7 @@
 						"value": "[parameters('resourceFolder')]"
 					},
 					"SqlVMName": {
-						"value": "SQLVM3"
+						"value": "ci-SQL3"
 					},
 					"AvailabilityZone": {
 						"value": "1"

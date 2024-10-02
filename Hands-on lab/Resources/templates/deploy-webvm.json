@@ -95,9 +95,9 @@
 		"WebVMImageOffer": "WindowsServer",
 		"WebSKU": "2022-Datacenter",
 		"WebVMSize": "[concat('Standard_',parameters('skuSizeVM'))]",
-		"WebVMNicName": "[concat(parameters('WebVMName'), 'NIC')]",
-		"WebVMOSDiskName": "[concat(parameters('WebVMName'), 'OSDisk')]",
-		"WebVMIPName": "[concat(parameters('WebVMName'), 'IP')]",
+		"WebVMNicName": "[concat(parameters('WebVMName'), '-NIC')]",
+		"WebVMOSDiskName": "[concat(parameters('WebVMName'), '-OSDisk')]",
+		"WebVMIPName": "[concat(parameters('WebVMName'), '-PIP')]",
 		"DiskType": "Premium_LRS",
 		"domainOUPath": "",
 		"domainJoinOptions": 3

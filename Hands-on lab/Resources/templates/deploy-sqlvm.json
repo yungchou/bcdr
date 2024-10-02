@@ -83,9 +83,9 @@
 		"SQLImageOffer": "SQL2022-WS2022",
 		"SQLSKU": "SQLDEV-GEN2",
 		"SQLVMSize": "[concat('Standard_',parameters('skuSizeVM'))]",
-		"SQLVMOSDiskName": "[concat(parameters('SQLVMName'), 'OSDisk')]",
-		"SQLVMDataDiskName": "[concat(parameters('SQLVMName'), 'DataDisk1')]",
-		"SQLNicName": "[concat(parameters('SQLVMName'), 'NIC')]",
+		"SQLVMOSDiskName": "[concat(parameters('SQLVMName'), '-OSDisk')]",
+		"SQLVMDataDiskName": "[concat(parameters('SQLVMName'), '-DataDisk1')]",
+		"SQLNicName": "[concat(parameters('SQLVMName'), '-NIC')]",
 		"DiskType": "Premium_LRS",
 		"domainOUPath": "",
 		"domainJoinOptions": 3

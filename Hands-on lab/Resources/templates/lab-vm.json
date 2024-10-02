@@ -53,7 +53,7 @@
 		"subnetName": "Subnet",
 		"subnetPrefix": "10.10.175.0/24",
 		"NSGName": "LabVMNSG",
-		"publicIPAddressName": "LabVMIP",
+		"publicIPAddressName": "LabVM-PIP",
 		"publicIPAddressType": "Dynamic",
 		"vmName": "LabVM",
 		"vmSize": "[concat('Standard_',parameters('skuSizeVM'))]",
