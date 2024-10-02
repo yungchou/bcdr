@@ -17,7 +17,7 @@
 	"resources": [
 		{
 			"apiVersion": "2019-02-01",
-			"type": "Microsoft.Network/publicIpAddresses",
+			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[variables('BastionIPName')]",
 			"location": "[resourceGroup().location]",
 			"sku": {
