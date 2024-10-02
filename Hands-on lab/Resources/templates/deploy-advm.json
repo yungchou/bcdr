@@ -40,7 +40,7 @@
     },
     "adminUsername": {
       "type": "string",
-      "defaultValue": "demouser",
+      "defaultValue": "adadmin",
       "metadata": {
         "description": "The name of the administrator account of the new VM and domain"
       }
@@ -54,7 +54,7 @@
     },
     "domainName": {
       "type": "string",
-      "defaultValue": "contoso.com",
+      "defaultValue": "contoso.ins",
       "metadata": {
         "description": "The FQDN of the Active Directory domain"
       }

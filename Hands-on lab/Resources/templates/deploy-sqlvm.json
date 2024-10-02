@@ -33,7 +33,7 @@
     },
     "adminUsername": {
       "type": "string",
-      "defaultValue": "demouser",
+      "defaultValue": "adadmin",
       "metadata": {
         "description": "The name of the administrator account of the new VMs"
       }
@@ -47,7 +47,7 @@
     },
     "domainToJoin": {
       "type": "string",
-      "defaultValue": "contoso.com",
+      "defaultValue": "contoso.ins",
       "metadata": {
         "description": "Domain FQDN for VMs to join"
       }

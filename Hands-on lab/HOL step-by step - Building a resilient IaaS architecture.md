@@ -1,4 +1,4 @@
-![Microsoft Cloud Workshops](https://github.com/Microsoft/MCW-Template-Cloud-Workshop/raw/main/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
+![Microsoft Cloud Workshops](https://github.com/yungchou/bcdr/raw/main/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
 
 <div class="MCWHeader1">
 Building a resilient IaaS architecture
@@ -109,7 +109,7 @@ A template will be used to save time. You will configure each tier in subsequent
 
 1. Select the **Deploy to Azure** button below to open the Azure portal and launch the template deployment for the additional infrastructure components that will be used to enable high availability for the Contoso application. Log in to the Azure portal using your subscription credentials.
 
-    [![Button to deploy the Contoso High Availability resource template to Azure.](https://aka.ms/deploytoazurebutton "Deploy the Contoso HA resources to Azure")](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2FMCW-Building-a-resilient-IaaS-architecture%2Fmaster%2FHands-on%20lab%2FResources%2Ftemplates%2Fcontoso-iaas-ha.json)
+    [![Button to deploy the Contoso High Availability resource template to Azure.](https://aka.ms/deploytoazurebutton "Deploy the Contoso HA resources to Azure")](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fyungchou%2Fbcdr%2Fmain%2FHands-on%20lab%2FResources%2Ftemplates%2Fcontoso-iaas-ha.json)
 
 2. Complete the Custom deployment blade as follows:
 
@@ -143,9 +143,9 @@ In this task, you will reboot all the virtual machines to ensure they receive th
 
 When using a domain controller VM in Azure, other VMs in the virtual network must be configured to use the domain controller as their DNS server. This is achieved with the DNS settings in the virtual network. These settings are then picked up by the VMs when they reboot or renew their DHCP lease.
 
-The initial deployment included a first domain controller VM, **ADVM1**, with static private IP address **10.0.3.100**. The initial deployment also configured this IP address in the VNet DNS settings.
+The initial deployment included a first domain controller VM, **ADVM1**, with static private IP address **10.175.3.100**. The initial deployment also configured this IP address in the VNet DNS settings.
 
-The HA resources template has added a second domain controller, **ADVM2**.  The static private IP address should be **10.0.3.101**. This server has already been promoted to be a domain controller using a CustomScriptExtension (you can review this script if you like, you'll find it linked from the ADVM2 deployment template). The template also updated the DNS setting on the virtual network to include the IP address of the second domain controller.
+The HA resources template has added a second domain controller, **ADVM2**.  The static private IP address should be **10.175.3.101**. This server has already been promoted to be a domain controller using a CustomScriptExtension (you can review this script if you like, you'll find it linked from the ADVM2 deployment template). The template also updated the DNS setting on the virtual network to include the IP address of the second domain controller.
 
 In this task, you will reboot all the servers to ensure they have the latest DNS settings.
 
@@ -196,7 +196,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
 8. Connect to the machine using the following credentials:
 
-    - **Username**: `demouser@contoso.com`
+    - **Username**: `adadmin@contoso.ins`
     - **Password**: `Demo!pass123`
 
     > **Note**: When using Azure Bastion to connect to a VM using domain credentials, the username must be specified in the format `user@domain-fqdn` and **not** in the format `domain\user`.
@@ -207,10 +207,10 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![Screenshot of the Windows PowerShell icon.](images/image71.png "Windows PowerShell icon")
 
-10. Copy and paste the following command into PowerShell and execute it. This will create the Windows Failover Cluster and add all the SQL VMs as nodes in the cluster. It will also assign a static IP address of **10.0.2.99** to the new Cluster named **AOGCLUSTER**.
+10. Copy and paste the following command into PowerShell and execute it. This will create the Windows Failover Cluster and add all the SQL VMs as nodes in the cluster. It will also assign a static IP address of **10.175.2.99** to the new Cluster named **AOGCLUSTER**.
 
     ```PowerShell
-    New-Cluster -Name AOGCLUSTER -Node SQLVM1,SQLVM2 -StaticAddress 10.0.2.99
+    New-Cluster -Name AOGCLUSTER -Node SQLVM1,SQLVM2 -StaticAddress 10.175.2.99
     ```
 
     ![In the PowerShell window, the command is shown after being successfully executed.](images/ha-createfailovercluster.png "PowerShell window")
@@ -275,7 +275,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![A pop-up warns that any changes will not take effect until the service stops and restarts. The OK button is selected.](images/image169.png "Warning pop-up")
 
-25. On the **Log On** tab, change the service account to `contoso\demouser` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
+25. On the **Log On** tab, change the service account to `contoso\adadmin` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
 
     ![In the SQL Server Properties dialog box, on the Log On tab, fields are set to the previously defined settings. The OK button is selected.](images/ha-sql-logon.png "SQL Server Properties dialog box")
 
@@ -287,7 +287,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![Screenshot of Microsoft SQL Server Management Studio 18 on the Start menu.](images/image172.png "Microsoft SQL Server Management Studio 18")
 
-28. Select **Connect** to sign on to **SQLVM1**. **Note**: The username for your lab should show **CONTOSO\demouser**.
+28. Select **Connect** to sign on to **SQLVM1**. **Note**: The username for your lab should show **CONTOSO\adadmin**.
 
     ![Screenshot of the Connect to Server dialog box.](images/image173.png "Connect to Server dialog box")
 
@@ -315,7 +315,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![Screenshot of the Add replica button.](images/image179.png "Add replica button")
 
-35. On the **Connect to Server** dialog box, enter the Server Name of **SQLVM2**and select **Connect**. **Note**: The username for your lab should show **CONTOSO\demouser**.
+35. On the **Connect to Server** dialog box, enter the Server Name of **SQLVM2**and select **Connect**. **Note**: The username for your lab should show **CONTOSO\adadmin**.
 
     ![Image of the Connect to Server dialog box for SQLVM2.](images/image180.png "Connect to Server dialog box")
 
@@ -343,7 +343,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![The Add button is selected beneath an empty subnet table.](images/image187.png "Add button")
 
-41. Select the Subnet of **10.0.2.0/24** and then add IPv4 **10.0.2.100** and select **OK**. This is the IP address of the Internal Load Balancer that is in front of the **SQLVM1** and **SQLVM2** in the **Data** subnet running in the **Primary** Site.
+41. Select the Subnet of **10.175.2.0/24** and then add IPv4 **10.175.2.100** and select **OK**. This is the IP address of the Internal Load Balancer that is in front of the **SQLVM1** and **SQLVM2** in the **Data** subnet running in the **Primary** Site.
 
     ![The Add IP Address dialog box fields are set to the previously defined settings.](images/image188.png "Add IP Address dialog box")
 
@@ -379,7 +379,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![Connect / Database Engine is selected in Object Explorer.](images/image200.png "Object Explorer")
 
-50. Enter **BCDRAOG** as the Server Name. This will be connected to the listener of the group that you created. **Note**: The username for your lab should show **CONTOSO\demouser**.
+50. Enter **BCDRAOG** as the Server Name. This will be connected to the listener of the group that you created. **Note**: The username for your lab should show **CONTOSO\adadmin**.
 
     ![In the Connect to Server Dialog box, the Server name is BCDRAOG, and the connect button is selected.](images/image201.png "Connect to Server Dialog box")
 
@@ -391,8 +391,8 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ```Powershell
     $ClusterNetworkName = "Cluster Network 1"
-    $IPResourceName = "BCDRAOG_10.0.2.100"
-    $ILBIP = "10.0.2.100"
+    $IPResourceName = "BCDRAOG_10.175.2.100"
+    $ILBIP = "10.175.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
@@ -405,17 +405,17 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
     ![In Object Explorer, Connect / Database Engine is selected.](images/image200.png "Object Explorer")
 
-54. This time, put the following into the IP address of the Internal Load balancer of the **Primary** Site AOG Load Balancer: **10.0.2.100**. You again will be able to connect to the server, which is up and running as the master. **Note**: The username for your lab should show **CONTOSO\demouser**.
+54. This time, put the following into the IP address of the Internal Load balancer of the **Primary** Site AOG Load Balancer: **10.175.2.100**. You again will be able to connect to the server, which is up and running as the master. **Note**: The username for your lab should show **CONTOSO\adadmin**.
 
     ![Fields in the Connect to Server dialog box are set to the previously defined settings.](images/image205.png "Connect to Server dialog box")
 
-55. Once connected to **10.0.2.100**, you can select **Databases** and will be able to see the database there. Notice that you do not know directly which server this is running on.
+55. Once connected to **10.175.2.100**, you can select **Databases** and will be able to see the database there. Notice that you do not know directly which server this is running on.
 
     ![A callout points to the Databases folder in Object Explorer.](images/ha-ssms-ip.png "Object Explorer")
 
     > **Note**: It could take a minute to connect the first time as this goes through the Azure Internal Load Balancer.
 
-56. Move back to Failover Cluster Manager on **SQLVM1**, and you can review the IP Addresses that were added by selecting Roles and **BCDRAOG** and viewing the Resources. Notice how the **10.0.2.100** is Online.
+56. Move back to Failover Cluster Manager on **SQLVM1**, and you can review the IP Addresses that were added by selecting Roles and **BCDRAOG** and viewing the Resources. Notice how the **10.175.2.100** is Online.
 
     ![In the Failover Cluster Manager tree view, Roles is selected. Under Roles, BCDRAOG is selected, and details of the role are displayed.](images/ha-fcm-aogrole.png "Failover Cluster Manager")
 
@@ -427,7 +427,7 @@ In this task, you will configure a high-availability web tier. This comprises tw
 
 1. In the Azure portal, navigate to **WebVM1**, select **Connect** followed by **Bastion**, and connect to the VM using the following credentials:
 
-    - **Username**: `demouser@contoso.com`
+    - **Username**: `adadmin@contoso.ins`
     - **Password**: `Demo!pass123`
 
 2. In **WebVM1**, open Windows Explorer, navigate to **C:\inetpub\wwwroot** and open the **Web.config** file using Notepad.
@@ -436,7 +436,7 @@ In this task, you will configure a high-availability web tier. This comprises tw
 
 3. In the **Web.config** file, locate the **\<ConnectionStrings\>** element and replace **SQLVM1** with **BCDRAOG** in the data source. Remember to **Save** the file.
 
-    ![Notepad is editing the web.config file. The data source is updated to BCDRAOG.contoso.com.](images/ha-webconfig.png "Web.config file")
+    ![Notepad is editing the web.config file. The data source is updated to BCDRAOG.contoso.ins.](images/ha-webconfig.png "Web.config file")
 
 4. Repeat the above steps to make the same change on **WebVM2**.
 
@@ -624,7 +624,7 @@ In this task, you will deploy the resources used by the DR environment. First, y
 
 ### Task 2: Inspect DR for the Domain Controller tier
 
-The failover site in East US 2 has been deployed with two additional domain controllers, **ADVM3** and **ADVM4**. These are integrated with the existing `contoso.com` domain hosted on **ADVM1** and **ADVM2** in the primary site. They run in a fully active-active configuration (therefore, no failover is required for this tier).
+The failover site in East US 2 has been deployed with two additional domain controllers, **ADVM3** and **ADVM4**. These are integrated with the existing `contoso.ins` domain hosted on **ADVM1** and **ADVM2** in the primary site. They run in a fully active-active configuration (therefore, no failover is required for this tier).
 
 The configuration of these domain controllers is fully automatic. In this task, you will simply review the rest of the configuration to confirm everything is as it should be.
 
@@ -643,7 +643,7 @@ The configuration of these domain controllers is fully automatic. In this task, 
 
     ![Azure portal showing the Contoso-IaaS-DR template, with the deployment sequence highlighted.](images/dr-ad.png "DR template")
 
-3. Navigate to the **ContosoRG2** resource group. Inspect network interface (NIC) resources for the **ADVM3** and **ADVM4** VMs to confirm their network settings include the static private IP addresses **10.1.3.100** and **10.1.3.101**, respectively.
+3. Navigate to the **ContosoRG2** resource group. Inspect network interface (NIC) resources for the **ADVM3** and **ADVM4** VMs to confirm their network settings include the static private IP addresses **10.228.3.100** and **10.228.3.101**, respectively.
 
     ![Network interface configuration showing a static private IP address for ADVM3.](images/dr-adip.png "Static IPs")
 
@@ -678,7 +678,7 @@ This task comprises the following steps:
 
     > **Note**: For this lab, the DR site is configured with a single SQL Server VM. Using a load balancer is therefore not strictly required. However, it allows the DR site to be extended to include its own HA cluster if needed.
 
-3. Return to your browser tab containing your Bastion session with **SQLVM1**. (If you have closed the tab, reconnect using Azure Bastion with username `demouser@contoso.com` and password `Demo!pass123`.)
+3. Return to your browser tab containing your Bastion session with **SQLVM1**. (If you have closed the tab, reconnect using Azure Bastion with username `adadmin@contoso.ins` and password `Demo!pass123`.)
 
 4. On **SQLVM1**, use **Windows PowerShell** to execute the following command. This command will add **SQLVM3** as a node in the existing Windows Server Failover Cluster.
 
@@ -690,7 +690,7 @@ This task comprises the following steps:
 
     ![In Failover Cluster Manager, Nodes is selected in the tree view, and three nodes are displayed in the details pane.](images/dr-fcm-3nodes.png "Failover Cluster Manager")
 
-6. Return to the Azure portal. Locate **SQLVM3**, and connect to the VM using Azure Bastion with the username `demouser@contoso.com` and the password `Demo!pass123`.
+6. Return to the Azure portal. Locate **SQLVM3**, and connect to the VM using Azure Bastion with the username `adadmin@contoso.ins` and the password `Demo!pass123`.
 
 7. On **SQLVM3**, select **Start** and launch **SQL Server 2017 Configuration Manager**.
 
@@ -706,7 +706,7 @@ This task comprises the following steps:
 
     ![A pop-up warns that any changes will not take effect until the service stops and restarts. The OK button is selected.](images/image169.png "Warning pop-up")
 
-10. On the **Log On** tab, change the service account to `contoso\demouser` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
+10. On the **Log On** tab, change the service account to `contoso\adadmin` with the password `Demo!pass123`. Select **OK** to accept the changes, and then select **Yes** to confirm the restart of the server.
 
     ![In the SQL Server Properties dialog box, on the Log On tab, fields are set to the previously defined settings. The OK button is selected.](images/ha-sql-logon.png "SQL Server Properties dialog box")
 
@@ -722,7 +722,7 @@ This task comprises the following steps:
 
     ![On the BCDRAOG Listener properties dialog, 'Add' is selected.](images/dr-sql-l2.png "Listener - Add")
 
-14. On the Add IP Address dialog, check the subnet is **10.1.2.0** (this is the Data subnet in VNet2). Enter the IP address **10.1.2.100** (this is the frontend IP of the SQL load balancer in VNet2). Select **OK**.
+14. On the Add IP Address dialog, check the subnet is **10.228.2.0** (this is the Data subnet in VNet2). Enter the IP address **10.228.2.100** (this is the frontend IP of the SQL load balancer in VNet2). Select **OK**.
 
     ![On the BCDRAOG Listener Add IP Address dialog, the IP address is entered as specified.](images/dr-sql-l3.png "Listener - IP")
 
@@ -778,8 +778,8 @@ This task comprises the following steps:
 
     ```Powershell
     $ClusterNetworkName = "Cluster Network 2"
-    $IPResourceName = "BCDRAOG_10.1.2.100"
-    $ILBIP = "10.1.2.100"
+    $IPResourceName = "BCDRAOG_10.228.2.100"
+    $ILBIP = "10.228.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
@@ -788,7 +788,7 @@ This task comprises the following steps:
 
     ![In the Windows PowerShell window, the script from the lab guide has been executed.](images/dr-ise-listenerip.png "Windows PowerShell window")
 
-28. Move back to Failover Cluster Manager on **SQLVM1**, select **Roles**, then **BCDRAOG**. Notice how the **Resources** tab shows that the new IP address **10.1.2.100** has been added and is currently Offline.
+28. Move back to Failover Cluster Manager on **SQLVM1**, select **Roles**, then **BCDRAOG**. Notice how the **Resources** tab shows that the new IP address **10.228.2.100** has been added and is currently Offline.
 
     ![In the Failover Cluster Manager tree view, Roles is selected. Under Roles, BCDRAOG is selected, and the Resources tab is selected, displaying the offline IP address.](images/dr-fcm-role.png "Failover Cluster Manager")
 
@@ -1236,7 +1236,7 @@ In this task, we will validate high availability for both the Web and SQL tiers.
 
 2. The Contoso application should load in your browser tab. Select **Current Policy Offerings** to view the policy list - this shows the database is accessible. As an additional check, edit an existing policy and save your changes to show that the database is writable.
 
-3. Open an Azure Bastion session with **SQLVM1** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica.
+3. Open an Azure Bastion session with **SQLVM1** (with username `adadmin@contoso.ins` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica.
 
    ![SQL Server Management Studio screenshot showing SQLVM1 as the primary replica.](images/v-sql1.png "SQLVM1 as Primary")
 
@@ -1244,7 +1244,7 @@ In this task, we will validate high availability for both the Web and SQL tiers.
 
 5. Refresh the browser tab with the Contoso application. The application still works. Confirm again that the database is writable by changing one of the policies.
 
-6. Open an Azure Bastion session with **SQLVM2** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM2** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM2** as the primary replica, and there is a critical warning about **SQLVM1** not being available.
+6. Open an Azure Bastion session with **SQLVM2** (with username `adadmin@contoso.ins` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM2** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM2** as the primary replica, and there is a critical warning about **SQLVM1** not being available.
 
    ![SQL Server Management Studio screenshot showing SQLVM2 as the primary replica, with warnings.](images/v-sql2.png "SQLVM2 as Primary")
 
@@ -1252,7 +1252,7 @@ In this task, we will validate high availability for both the Web and SQL tiers.
 
 8. Refresh the blade with the Contoso application. The application still works. Confirm again that the database is writable by changing one of the policies.
 
-9. Re-open an Azure Bastion session with **SQLVM1** (with username `demouser@contoso.com` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica, and there is a critical warning about **SQLVM2** not being available.
+9. Re-open an Azure Bastion session with **SQLVM1** (with username `adadmin@contoso.ins` and password `Demo!pass123`). Open **SQL Server Management Studio** and connect to **SQLVM1** using Windows Authentication. Locate the BCDRAOG availability group, right-click and select **Show Dashboard**. Note that the dashboard shows **SQLVM1** as the primary replica, and there is a critical warning about **SQLVM2** not being available.
 
     ![SQL Server Management Studio screenshot showing SQLVM1 as the primary replica, with warnings.](images/v-sql1b.png "SQLVM1 as Primary")
 
@@ -1376,7 +1376,7 @@ In this task, you will failback the Contoso application from the DR site in your
 
 8. As previously, the portal will submit a deployment. This process will take some time. You can proceed with the lab without waiting.
 
-9. Next, you need to reset the SQL Always On Availability Group environment to ensure a proper failover. Use Azure Bastion to connect to **SQLVM1** with username `demouser@contoso.com` and password `Demo!pass123`.
+9. Next, you need to reset the SQL Always On Availability Group environment to ensure a proper failover. Use Azure Bastion to connect to **SQLVM1** with username `adadmin@contoso.ins` and password `Demo!pass123`.
 
 10. Once connected to **SQLVM1**, open SQL Server Management Studio and Connect to **SQLVM1**. Expand the **Always On Availability Group**s and then right-click on **BCDRAOG** and select **Show Dashboard**.
 
@@ -1404,7 +1404,7 @@ In this task, you will validate the backup for the Contoso application WebVMs. Y
 
 1. From the Azure portal, locate and shut down **WebVM2**. This forces all traffic to be served by **WebVM1**, making the backup/restore verification easier.
 
-2. Navigate to **WebVM1** and connect to the VM using Azure Bastion, using username `demouser@contoso.com` and password `Demo!pass123`.
+2. Navigate to **WebVM1** and connect to the VM using Azure Bastion, using username `adadmin@contoso.ins` and password `Demo!pass123`.
 
 3. Open Windows Explorer and navigate to the `C:\inetpub\wwwroot\Content` folder. Select the three `.PNG` files and delete them.
 
@@ -1494,7 +1494,7 @@ In this task, you will validate the ability to restore the Contoso application d
 
     ![Screenshot showing the list of backup jobs with the database restore highlighted.](images/v-bk-sql6.png "Database restore backup job")
 
-9. Navigate to **SQLVM1** and connect to the VM using Azure Bastion, using username `demouser@contoso.com` and password `Demo!pass123`.
+9. Navigate to **SQLVM1** and connect to the VM using Azure Bastion, using username `adadmin@contoso.ins` and password `Demo!pass123`.
 
 10. On SQLVM1, open **SQL Server Management Studio** and connect to SQLVM1.
 

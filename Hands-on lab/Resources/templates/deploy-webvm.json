@@ -33,7 +33,7 @@
     },
     "adminUsername": {
       "type": "string",
-      "defaultValue": "demouser",
+      "defaultValue": "adadmin",
       "metadata": {
         "description": "The name of the administrator account of the new VMs"
       }

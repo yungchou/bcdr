@@ -211,7 +211,7 @@ In this exercise, you will deploy Windows Server Active Directory configured for
 
 -   Run the following script on the ADVM virtual machine:
 
--   Set-DnsServerPrimaryZone -Name Contoso.com -DynamicUpdate NonsecureAndSecure 
+-   Set-DnsServerPrimaryZone -Name contoso.ins -DynamicUpdate NonsecureAndSecure 
 
 #### Exit criteria
 
@@ -225,7 +225,7 @@ In this exercise, you will deploy Windows Server Active Directory configured for
 
 #### Tasks to complete
 
--   Promote the four DCs to join the Contoso.com Active Directory domain
+-   Promote the four DCs to join the contoso.ins Active Directory domain
 
 #### Exit criteria
 
@@ -251,10 +251,10 @@ In this task, you will deploy a SQL Always-On cluster using an ARM template that
 
 -   After the template is deployed, execute the following command on SQLVM-1:
     ```
-    New-Cluster -Name CLUST-1 -Node SQLVM-1,SQLVM-2,WITNESSVM -StaticAddress 10.0.1.8 
+    New-Cluster -Name CLUST-1 -Node SQLVM-1,SQLVM-2,WITNESSVM -StaticAddress 10.175.1.8 
     ```
 
--   Enable SQL Server AlwaysOn on SQLVM-1 and SQL VM-2 and change the service login for both to Contoso\\demouser
+-   Enable SQL Server AlwaysOn on SQLVM-1 and SQL VM-2 and change the service login for both to Contoso\\adadmin
 
 -   Copy the script from: **C:\\HOL\\CreateSQLAG.sql** on the LABVM to **C:\\SQATA on SQLVM-1**. Execute the script in cmd mode.
 
