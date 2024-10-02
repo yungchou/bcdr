@@ -11,7 +11,7 @@
 		}
 	},
 	"variables": {
-		"BastionIPName": "PrimaryBastionIP",
+		"BastionIPName": "PrimaryBastion-PIP",
 		"BastionName": "PrimaryBastion"
 	},
 	"resources": [
