@@ -3,16 +3,10 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "skuSizeVM": {
-      "defaultValue": "D2s_v3",
+      "defaultValue": "E2bds_v5",
       "type": "string",
-      "metadata": {
-        "description": "Size of Virtual Machines to use"
-      },
-      "allowedValues": [
-        "D2s_v3",
-        "D2s_v5",
-        "DC2s_v3"
-      ]
+      "metadata": { "description": "Size of Virtual Machines to use" },
+      "allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
     },
     "ADVMName": {
       "type": "string",
@@ -78,7 +72,7 @@
   "variables": {
     "ADVMImagePublisher": "MicrosoftWindowsServer",
     "ADVMImageOffer": "WindowsServer",
-    "ADVMWindowsOSVersion": "2019-Datacenter",
+    "ADVMWindowsOSVersion": "2022-Datacenter",
     "ADVMOSDiskName": "[concat(parameters('ADVMName'), 'OSDisk')]",
     "ADVMDataDiskName": "[concat(parameters('ADVMName'), 'DataDisk1')]",
     "DiskType": "Premium_LRS",
@@ -169,7 +163,9 @@
               "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ADVMNicName'))]"
             }
           ]
-        }
+        },
+        "priority": "Spot",
+				"evictionPolicy": "Deallocate"
       },
       "resources": [
         {
