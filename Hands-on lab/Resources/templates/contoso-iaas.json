@@ -4,12 +4,14 @@
     "parameters": {
         "skuSizeVM": {
             "defaultValue": "E2bds_v5",
-            "type": "string",
+            "type": "string"
+,
             "metadata": { "description": "Size of Virtual Machines to use" },
             "allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
          },
         "adminUsername": {
-            "type": "string",
+            "type": "string"
+,
             "defaultValue": "adadmin",
             "metadata": {
                 "description": "The name of the administrator account of the new VM and domain"
@@ -23,18 +25,21 @@
             }
         },
         "domainName": {
-            "type": "string",
+            "type": "string"
+,
             "defaultValue": "contoso.ins",
             "metadata": {
                 "description": "The FQDN of the Active Directory Domain to be created"
             }
         },
         "baseUri": {
-            "type": "string",
+            "type": "string"
+,
             "defaultValue": "https://raw.githubusercontent.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/"
         },
         "resourceFolder": {
-            "type": "string",
+            "type": "string"
+,
             "defaultValue": "master/Hands-on%20lab/Resources/"
         }
     },

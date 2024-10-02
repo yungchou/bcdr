@@ -9,24 +9,28 @@
 						"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 				 },
     "SQLVMName": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "SQLVM1",
       "minLength": 1
     },
     "AvailabilityZone": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Availability zone to deploy to"
       }
     },
     "DataSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Subnet Id of the data tier"
       }
     },
     "adminUsername": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "adadmin",
       "metadata": {
         "description": "The name of the administrator account of the new VMs"
@@ -40,25 +44,29 @@
       }
     },
     "domainToJoin": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "contoso.ins",
       "metadata": {
         "description": "Domain FQDN for VMs to join"
       }
     },
     "SQLDownloadUrl": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "",
       "metadata": {
         "description": "(Optional) URL for SQL database backup to be restored into the database"
       }
     },
     "resourceFolder": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "master/Hands-on%20lab/Resources/"
     },
     "baseUri": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "https://raw.githubusercontent.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/"
     }
   },

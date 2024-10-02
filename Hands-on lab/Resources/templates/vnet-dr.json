@@ -3,7 +3,8 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "VNetName": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Name of the virtual network to create (or update)."
       }
@@ -145,19 +146,23 @@
   ],
   "outputs": {
     "AppsSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('AppsSubnetName'))]"
     },
     "DataSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('DataSubnetName'))]"
     },
     "ADSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('ADSubnetName'))]"
     },
     "BastionSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('BastionSubnetName'))]"
     }
   }

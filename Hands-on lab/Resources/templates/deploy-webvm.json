@@ -9,24 +9,28 @@
 						"allowedValues": [ "D2s_v3","D2s_v5","E2ads_v5","E2as_v5","E2bds_v5","E2bs_v5" ]
 				 },
     "WebVMName": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "WebVM1",
       "minLength": 1
     },
     "AvailabilityZone": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Availability zone to deploy to"
       }
     },
     "AppsSubnetId": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Subnet Id of the application tier"
       }
     },
     "adminUsername": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "adadmin",
       "metadata": {
         "description": "The name of the administrator account of the new VMs"
@@ -40,13 +44,15 @@
       }
     },
     "domainToJoin": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "Domain FQDN for VMs to join"
       }
     },
     "SQLEndpoint": {
-      "type": "string",
+      "type": "string"
+,
       "metadata": {
         "description": "SQL endpoint to use for the application database"
       }
@@ -58,18 +64,21 @@
       }
     },
     "IpDomainNameLabel": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "[concat('contoso', take(newGuid(), 4))]",
       "metadata": {
         "description": "DNS label to use with public IP address"
       }
     },
     "resourceFolder": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "master/Hands-on%20lab/Resources/"
     },
     "baseUri": {
-      "type": "string",
+      "type": "string"
+,
       "defaultValue": "https://raw.githubusercontent.com/microsoft/MCW-Building-a-resilient-IaaS-architecture/"
     }
   },
