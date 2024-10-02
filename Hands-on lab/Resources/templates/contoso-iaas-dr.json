@@ -82,7 +82,8 @@
 		"DNSIPsOfPrimaryVnet": "[parameters('DNSIPsOfPrimaryVnet')]",
 		"ADVM3PrivateIPAddress": "[parameters('ADVM3PrivateIPAddress')]",
 		"ADVM4PrivateIPAddress": "[parameters('ADVM4PrivateIPAddress')]",
-		"SecondarySQLLBPrivateIPAddress": "[parameters('SecondarySQLLBPrivateIPAddress')]"
+		"SecondarySQLLBPrivateIPAddress": "[parameters('SecondarySQLLBPrivateIPAddress')]",
+		"PeeringName": "[concat('Peering', take(uniqueString(resourceGroup().id), 2))]"
 	},
 	"resources": [
 		{
@@ -106,7 +107,7 @@
 			}
 		},
 		{
-			"name": "Peering",
+			"name": "[variables('PeeringName')]",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
 			"dependsOn": [
@@ -134,9 +135,7 @@
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
 			"resourceGroup": "[parameters('SecondaryRG')]",
-			"dependsOn": [
-				"Peering"
-			],
+			"dependsOn": [ "[variables('PeeringName')]" ],
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
