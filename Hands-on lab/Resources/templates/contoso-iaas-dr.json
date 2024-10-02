@@ -31,25 +31,25 @@
 		},
 		"PrimaryRG": {
 			"type": "string",
-			"defaultValue": "ci-w2",
+			"defaultValue": "ci175-w2",
 			"metadata": {
 				"description": "Existing resource group name of the primary region"
 			}
 		},
 		"vnetNamePrimary": {
 			"type": "string", 
-			"defaultValue": "[concat(resourceGroup().location,'-175')]"
+			"defaultValue": "westus2-175"
 		},
 		"SecondaryRG": {
 			"type": "string",
-			"defaultValue": "ci-w3",
+			"defaultValue": "ci228-w3",
 			"metadata": {
 				"description": "Existing resource group name of the secondary region"
 			}
 		},
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
-			"defaultValue": "2ndRegion-228"
+			"defaultValue": "westus3-228"
 		},
 		"baseUri": {
 			"type": "string",
