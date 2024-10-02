@@ -293,7 +293,7 @@
 				},
 				"parameters": {
 					"WebLBDnsLabelPrefix": {
-						"value": "ci-DR-"
+						"value": "ci-dr-"
 					},
 					"Environment": {
 						"value": "Secondary"
