@@ -143,7 +143,7 @@
 				},
 				"parameters": {
 					"VNetName": { "value": "[variables('vnetNameSecondary')]"},
-					"DNSIPs": { "value": "[variales('DNSIPsOfPrimaryVnet')]" }
+					"DNSIPs": { "value": "[variables('DNSIPsOfPrimaryVnet')]" }
 				}
 			}
 		},
