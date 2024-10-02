@@ -97,7 +97,7 @@
               "probe": {
                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('ExternalLoadBalancerName'), variables('ProbeName'))]"
               },
-              "protocol": "tcp",
+              "protocol": "Tcp",
               "frontendPort": 80,
               "backendPort": 80,
               "enableFloatingIP": false,
@@ -109,7 +109,7 @@
           {
             "name": "[variables('ProbeName')]",
             "properties": {
-              "protocol": "tcp",
+              "protocol": "Tcp",
               "port": 80,
               "intervalInSeconds": 5,
               "numberOfProbes": 2
