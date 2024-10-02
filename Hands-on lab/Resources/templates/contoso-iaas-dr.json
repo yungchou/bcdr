@@ -40,6 +40,10 @@
 			"type": "string", 
 			"defaultValue": "westus2-175"
 		},
+		"DNSIPsOfPrimaryVnet": {
+			"type": "array", 
+			"defaultValue": ["10.175.3.100","10.175.3.101"]
+		},
 		"SecondaryRG": {
 			"type": "string",
 			"defaultValue": "ci228-w3",
@@ -50,6 +54,18 @@
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
 			"defaultValue": "westus3-228"
+		},
+		"ADVM3PrivateIPAddress":{
+			"type": "string",
+			"defaultValue": "10.228.3.100"
+		},
+		"ADVM4PrivateIPAddress":{
+			"type": "string",
+			"defaultValue": "10.228.3.101"
+		},
+		"SecondarySQLLBPrivateIPAddress": {
+			"type": "string", 
+			"defaultValue": "10.228.2.100"
 		},
 		"baseUri": {
 			"type": "string",
@@ -62,7 +78,11 @@
 	},
 	"variables": {
 		"vnetNamePrimary": "[parameters('vnetNamePrimary')]",
-		"vnetNameSecondary": "[parameters('vnetNameSecondaryToBeCreated')]"
+		"vnetNameSecondary": "[parameters('vnetNameSecondaryToBeCreated')]",
+		"DNSIPsOfPrimaryVnet": "[parameters('DNSIPsOfPrimaryVnet')]",
+		"ADVM3PrivateIPAddress": "[parameters('ADVM3PrivateIPAddress')]",
+		"ADVM4PrivateIPAddress": "[parameters('ADVM4PrivateIPAddress')]",
+		"SecondarySQLLBPrivateIPAddress": "[parameters('SecondarySQLLBPrivateIPAddress')]"
 	},
 	"resources": [
 		{
@@ -124,15 +144,8 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
-					"VNetName": {
-						"value": "[variables('vnetNameSecondary')]"
-					},
-					"DNSIPs": {
-						"value": [
-							"10.175.3.100",
-							"10.175.3.101"
-						]
-					}
+					"VNetName": { "value": "[variables('vnetNameSecondary')]"},
+					"DNSIPs": { "value": "[variales('DNSIPsOfPrimaryVnet')]" }
 				}
 			}
 		},
@@ -170,7 +183,7 @@
 						"value": "[reference('VirtualNetworkSecondary').outputs.ADSubnetId.value]"
 					},
 					"ADVMPrivateIPAddress": {
-						"value": "10.228.3.100"
+						"value": "[variables('ADVM3PrivateIPAddress')]"
 					},
 					"adminUserName": {
 						"value": "[parameters('adminUserName')]"
@@ -221,7 +234,7 @@
 						"value": "[reference('VirtualNetworkSecondary').outputs.ADSubnetId.value]"
 					},
 					"ADVMPrivateIPAddress": {
-						"value": "10.228.3.101"
+						"value": "[variables('ADVM4PrivateIPAddress')]"
 					},
 					"adminUserName": {
 						"value": "[parameters('adminUserName')]"
@@ -259,8 +272,7 @@
 					},
 					"DNSIPs": {
 						"value": [
-							"10.228.3.100",
-							"10.228.3.101"
+							"[variables('ADVM3PrivateIPAddress')]","[variables('ADVM4PrivateIPAddress')]"
 						]
 					}
 				}
@@ -280,6 +292,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"WebLBDnsLabelPrefix": {
+						"value": "ci-DR-"
+					},
 					"Environment": {
 						"value": "Secondary"
 					},
@@ -287,7 +302,7 @@
 						"value": "[reference('VirtualNetworkSecondary').outputs.DataSubnetId.value]"
 					},
 					"SQLLBPrivateIPAddress": {
-						"value": "10.228.2.100"
+						"value": "[variables('SecondarySQLLBPrivateIPAddress')]"
 					}
 				}
 			}

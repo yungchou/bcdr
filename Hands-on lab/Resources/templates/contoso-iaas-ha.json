@@ -120,6 +120,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"WebLBDnsLabelPrefix": {
+						"value": "ci-"
+					},
 					"Environment": {
 						"value": "Primary"
 					},

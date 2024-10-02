@@ -28,10 +28,10 @@
 		}
 	},
 	"variables": {
-		"InternalLoadBalancerName": "[concat(parameters('Environment'),'ContosoSQLLB')]",
-		"ExternalLoadBalancerName": "[concat(parameters('Environment'),'ContosoWebLB')]",
-		"FrontEnd2IIS": "FrontEnd2IIS",
-		"FrontEnd2SQL": "FrontEnd2SQL",
+		"InternalLoadBalancerName": "[concat(parameters('Environment'),'InternalLB2SQL')]",
+		"ExternalLoadBalancerName": "[concat(parameters('Environment'),'ExternalLB2IIS')]",
+		"FrontEnd-IIS": "FrontEnd-IIS",
+		"FrontEnd-SQL": "FrontEnd-SQL",
 		"Rule80": "80",
 		"Rule1433": "1433",
 		"BackEndPoolIIS": "BackEndPool-IIS",
@@ -75,7 +75,7 @@
 			"properties": {
 				"frontendIPConfigurations": [
 					{
-						"name": "[variables('FrontEnd2IIS')]",
+						"name": "[variables('FrontEnd-IIS')]",
 						"properties": {
 							"publicIPAddress": {
 								"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('ExternalLoadBalancerPublicIPName'))]"
@@ -93,7 +93,7 @@
 						"name": "[variables('Rule80')]",
 						"properties": {
 							"frontendIPConfiguration": {
-								"id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('ExternalLoadBalancerName'), variables('FrontEnd2IIS'))]"
+								"id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('ExternalLoadBalancerName'), variables('FrontEnd-IIS'))]"
 							},
 							"backendAddressPool": {
 								"id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('ExternalLoadBalancerName'), variables('BackEndPoolIIS'))]"
@@ -137,7 +137,7 @@
 			"properties": {
 				"frontendIPConfigurations": [
 					{
-						"name": "[variables('FrontEnd2SQL')]",
+						"name": "[variables('FrontEnd-SQL')]",
 						"properties": {
 							"subnet": {
 								"id": "[parameters('DataSubnetId')]"
@@ -157,7 +157,7 @@
 						"name": "[variables('Rule1433')]",
 						"properties": {
 							"frontendIPConfiguration": {
-								"id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('InternalLoadBalancerName'), variables('FrontEnd2SQL'))]"
+								"id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', variables('InternalLoadBalancerName'), variables('FrontEnd-SQL'))]"
 							},
 							"backendAddressPool": {
 								"id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('InternalLoadBalancerName'), variables('BackEndPoolSQL'))]"
