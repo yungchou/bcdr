@@ -61,8 +61,8 @@
 		}
 	},
 	"variables": {
-		"vnetNamePrimary": "VNet1",
-		"vnetNameSecondary": "VNet2"
+		"vnetNamePrimary": "vnet175",
+		"vnetNameSecondary": "vnet228"
 	},
 	"resources": [
 		{
