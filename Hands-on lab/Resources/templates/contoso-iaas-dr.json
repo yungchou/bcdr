@@ -29,7 +29,7 @@
 				"description": "The FQDN of the Active Directory Domain"
 			}
 		},
-		"PrimaryRG": {
+		"existingPrimaryRG": {
 			"type": "string",
 			"defaultValue": "ci175-w2",
 			"metadata": {
@@ -44,7 +44,7 @@
 			"type": "array", 
 			"defaultValue": ["10.175.3.100","10.175.3.101"]
 		},
-		"SecondaryRG": {
+		"existingSecondaryRG": {
 			"type": "string",
 			"defaultValue": "ci228-w3",
 			"metadata": {
@@ -89,7 +89,7 @@
 			"name": "VirtualNetworkSecondary",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 			],
 			"properties": {
@@ -121,10 +121,10 @@
 				},
 				"parameters": {
 					"VNet1Id": {
-						"value": "[concat(subscription().Id, '/resourceGroups/', parameters('PrimaryRG'), '/providers/Microsoft.Network/virtualNetworks/', variables('vnetNamePrimary'))]"
+						"value": "[concat(subscription().Id, '/resourceGroups/', parameters('existingPrimaryRG'), '/providers/Microsoft.Network/virtualNetworks/', variables('vnetNamePrimary'))]"
 					},
 					"VNet2Id": {
-						"value": "[concat(subscription().Id, '/resourceGroups/', parameters('SecondaryRG'), '/providers/Microsoft.Network/virtualNetworks/', variables('vnetNameSecondary'))]"
+						"value": "[concat(subscription().Id, '/resourceGroups/', parameters('existingSecondaryRG'), '/providers/Microsoft.Network/virtualNetworks/', variables('vnetNameSecondary'))]"
 					}
 				}
 			}
@@ -133,7 +133,7 @@
 			"name": "VirtualNetworkSecondaryWithPrimaryDNS",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [ "Peering" ],
 			"properties": {
 				"mode": "Incremental",
@@ -151,7 +151,7 @@
 			"name": "ADVM3",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 				"VirtualNetworkSecondaryWithPrimaryDNS"
 			],
@@ -202,7 +202,7 @@
 			"name": "ADVM4",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 				"VirtualNetworkSecondaryWithPrimaryDNS"
 			],
@@ -253,7 +253,7 @@
 			"name": "VirtualNetworkSecondaryWithSecondaryDNS",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 				"ADVM3",
 				"ADVM4"
@@ -280,7 +280,7 @@
 			"name": "LoadBalancersSecondary",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 			],
 			"properties": {
@@ -309,7 +309,7 @@
 			"name": "SQLVM3",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 				"VirtualNetworkSecondaryWithSecondaryDNS"
 			],
@@ -357,7 +357,7 @@
 			"name": "Bastion",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2019-10-01",
-			"resourceGroup": "[parameters('SecondaryRG')]",
+			"resourceGroup": "[parameters('existingSecondaryRG')]",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/VirtualNetworkSecondary"
 			],
