@@ -155,7 +155,10 @@
 							"id": "[resourceId('Microsoft.Network/networkInterfaces', variables('SQLNicName'))]"
 						}
 					]
-				}			},
+				},
+				"priority": "Spot",
+				"evictionPolicy": "Deallocate"
+			},
 			"resources": [
 				{
 					"name": "InstallDB",
