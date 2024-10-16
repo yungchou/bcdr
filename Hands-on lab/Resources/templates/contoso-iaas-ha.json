@@ -38,7 +38,7 @@
 		},
 		"existingDNSServer": {
 			"type": "string",
-			"defaultValue": "10.175.3.100",
+			"defaultValue": "10.95.3.100",
 			"metadata": {
 				"description": "Existing DNS server in Virtual Network"
 			}
@@ -91,7 +91,7 @@
 						"value": "[variables('ADSubnetId')]"
 					},
 					"ADVMPrivateIPAddress": {
-						"value": "10.175.3.101"
+						"value": "10.95.3.101"
 					},
 					"adminUserName": {
 						"value": "[parameters('adminUserName')]"
@@ -130,7 +130,7 @@
 						"value": "[variables('DataSubnetId')]"
 					},
 					"SQLLBPrivateIPAddress": {
-						"value": "10.175.2.100"
+						"value": "10.95.2.100"
 					}
 				}
 			}

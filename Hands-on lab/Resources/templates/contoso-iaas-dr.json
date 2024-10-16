@@ -42,7 +42,7 @@
 		},
 		"DNSIPsOfPrimaryVnet": {
 			"type": "array", 
-			"defaultValue": ["10.175.3.100","10.175.3.101"]
+			"defaultValue": ["10.95.3.100","10.95.3.101"]
 		},
 		"existingSecondaryRG": {
 			"type": "string",

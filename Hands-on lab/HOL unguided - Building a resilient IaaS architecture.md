@@ -251,7 +251,7 @@ In this task, you will deploy a SQL Always-On cluster using an ARM template that
 
 -   After the template is deployed, execute the following command on SQLVM-1:
     ```
-    New-Cluster -Name CLUST-1 -Node SQLVM-1,SQLVM-2,WITNESSVM -StaticAddress 10.175.1.8 
+    New-Cluster -Name CLUST-1 -Node SQLVM-1,SQLVM-2,WITNESSVM -StaticAddress 10.95.1.8 
     ```
 
 -   Enable SQL Server AlwaysOn on SQLVM-1 and SQL VM-2 and change the service login for both to Contoso\\adadmin
