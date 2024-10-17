@@ -4,7 +4,7 @@
 	"parameters": {
 		"vnetName": {
 			"type": "string",
-			"defaultValue": "[concat(resourceGroup().location,'-175')]",
+			"defaultValue": "[concat(resourceGroup().location,'-95')]",
 			"metadata": {
 				"description": "Existing vnet for deploying resources"
 			}

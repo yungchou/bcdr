@@ -31,14 +31,14 @@
 		},
 		"existingPrimaryRG": {
 			"type": "string",
-			"defaultValue": "ci175-w2",
+			"defaultValue": "ci95-w2",
 			"metadata": {
 				"description": "Existing resource group name of the primary region"
 			}
 		},
 		"vnetNamePrimary": {
 			"type": "string", 
-			"defaultValue": "westus2-175"
+			"defaultValue": "westus2-95"
 		},
 		"DNSIPsOfPrimaryVnet": {
 			"type": "array", 
@@ -46,14 +46,14 @@
 		},
 		"existingSecondaryRG": {
 			"type": "string",
-			"defaultValue": "ci228-w3",
+			"defaultValue": "ci102-w3",
 			"metadata": {
 				"description": "Existing resource group name of the secondary region"
 			}
 		},
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
-			"defaultValue": "westus3-228"
+			"defaultValue": "westus3-102"
 		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",

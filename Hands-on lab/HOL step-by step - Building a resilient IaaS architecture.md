@@ -297,7 +297,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
 
 30. Select **Next** on the Wizard.
 
-    ![On the New Availability Group Wizard begin page, Next is selected.](images/image175.png "New Availability Group Wizard ")
+    ![On the New Availability Group Wizard begin page, Next is selected.](images/image95.png "New Availability Group Wizard ")
 
 31. Provide the name **BCDRAOG** for the **Availability group name**, then select **Next**.
 
