@@ -645,7 +645,7 @@ The configuration of these domain controllers is fully automatic. In this task, 
 
     ![Azure portal showing the Contoso-IaaS-DR template, with the deployment sequence highlighted.](images/dr-ad.png "DR template")
 
-3. Navigate to the **ContosoRG2** resource group. Inspect network interface (NIC) resources for the **ADVM3** and **ADVM4** VMs to confirm their network settings include the static private IP addresses **10.228.3.100** and **10.228.3.101**, respectively.
+3. Navigate to the **ContosoRG2** resource group. Inspect network interface (NIC) resources for the **ADVM3** and **ADVM4** VMs to confirm their network settings include the static private IP addresses **10.102.3.100** and **10.102.3.101**, respectively.
 
     ![Network interface configuration showing a static private IP address for ADVM3.](images/dr-adip.png "Static IPs")
 
@@ -724,7 +724,7 @@ This task comprises the following steps:
 
     ![On the BCDRAOG Listener properties dialog, 'Add' is selected.](images/dr-sql-l2.png "Listener - Add")
 
-14. On the Add IP Address dialog, check the subnet is **10.228.2.0** (this is the Data subnet in VNet2). Enter the IP address **10.228.2.100** (this is the frontend IP of the SQL load balancer in VNet2). Select **OK**.
+14. On the Add IP Address dialog, check the subnet is **10.102.2.0** (this is the Data subnet in VNet2). Enter the IP address **10.102.2.100** (this is the frontend IP of the SQL load balancer in VNet2). Select **OK**.
 
     ![On the BCDRAOG Listener Add IP Address dialog, the IP address is entered as specified.](images/dr-sql-l3.png "Listener - IP")
 
@@ -780,8 +780,8 @@ This task comprises the following steps:
 
     ```Powershell
     $ClusterNetworkName = "Cluster Network 2"
-    $IPResourceName = "BCDRAOG_10.228.2.100"
-    $ILBIP = "10.228.2.100"
+    $IPResourceName = "BCDRAOG_10.102.2.100"
+    $ILBIP = "10.102.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
@@ -790,7 +790,7 @@ This task comprises the following steps:
 
     ![In the Windows PowerShell window, the script from the lab guide has been executed.](images/dr-ise-listenerip.png "Windows PowerShell window")
 
-28. Move back to Failover Cluster Manager on **SQLVM1**, select **Roles**, then **BCDRAOG**. Notice how the **Resources** tab shows that the new IP address **10.228.2.100** has been added and is currently Offline.
+28. Move back to Failover Cluster Manager on **SQLVM1**, select **Roles**, then **BCDRAOG**. Notice how the **Resources** tab shows that the new IP address **10.102.2.100** has been added and is currently Offline.
 
     ![In the Failover Cluster Manager tree view, Roles is selected. Under Roles, BCDRAOG is selected, and the Resources tab is selected, displaying the offline IP address.](images/dr-fcm-role.png "Failover Cluster Manager")
 

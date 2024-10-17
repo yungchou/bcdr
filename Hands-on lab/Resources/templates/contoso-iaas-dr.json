@@ -57,15 +57,15 @@
 		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",
-			"defaultValue": "10.228.3.100"
+			"defaultValue": "10.102.3.100"
 		},
 		"ADVM4PrivateIPAddress":{
 			"type": "string",
-			"defaultValue": "10.228.3.101"
+			"defaultValue": "10.102.3.101"
 		},
 		"SecondarySQLLBPrivateIPAddress": {
 			"type": "string", 
-			"defaultValue": "10.228.2.100"
+			"defaultValue": "10.102.2.100"
 		},
 		"baseUri": {
 			"type": "string",
