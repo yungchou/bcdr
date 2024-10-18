@@ -27,6 +27,8 @@
 		"DataSubnetPrefix": "10.95.2.0/24",
 		"ADSubnetName": "Identity",
 		"ADSubnetPrefix": "10.95.3.0/24",
+		"avdSubnetName": "AVD",
+		"avdSubnetPrefix": "10.95.4.0/24",
 		"BastionSubnetName": "AzureBastionSubnet",
 		"BastionSubnetPrefix": "10.95.254.0/24"
 	},
