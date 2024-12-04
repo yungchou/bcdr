@@ -31,14 +31,14 @@
 		},
 		"existingPrimaryRG": {
 			"type": "string",
-			"defaultValue": "ci95-w2",
+			"defaultValue": "contoso.w2",
 			"metadata": {
 				"description": "Existing resource group name of the primary region"
 			}
 		},
 		"vnetNamePrimary": {
 			"type": "string", 
-			"defaultValue": "westus2-95"
+			"defaultValue": "w2-22"
 		},
 		"DNSIPsOfPrimaryVnet": {
 			"type": "array", 
@@ -46,14 +46,14 @@
 		},
 		"existingSecondaryRG": {
 			"type": "string",
-			"defaultValue": "ci102-w3",
+			"defaultValue": "contoso.w3",
 			"metadata": {
 				"description": "Existing resource group name of the secondary region"
 			}
 		},
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
-			"defaultValue": "westus3-102"
+			"defaultValue": "w3-33"
 		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",
