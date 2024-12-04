@@ -17,20 +17,20 @@
 		}
 	},
 	"variables": {
-		"NSGName": "AppsNSG-102",
+		"NSGName": "AppsNSG-33",
 		"NATName": "[concat(parameters('VNetName'), '-NAT')]",
 		"NATIPName": "[concat(variables('NATName'), '-PIP')]",
-		"VNetPrefix": "10.102.0.0/16",
+		"VNetPrefix": "10.33.0.0/16",
 		"AppsSubnetName": "Apps",
-		"AppsSubnetPrefix": "10.102.1.0/24",
+		"AppsSubnetPrefix": "10.33.1.0/24",
 		"DataSubnetName": "Data",
-		"DataSubnetPrefix": "10.102.2.0/24",
+		"DataSubnetPrefix": "10.33.2.0/24",
 		"ADSubnetName": "Identity",
-		"ADSubnetPrefix": "10.102.3.0/24",
+		"ADSubnetPrefix": "10.33.3.0/24",
 		"avdSubnetName": "AVD",
-		"avdSubnetPrefix": "10.95.4.0/24",
+		"avdSubnetPrefix": "10.22.4.0/24",
 		"BastionSubnetName": "AzureBastionSubnet",
-		"BastionSubnetPrefix": "10.102.254.0/24"
+		"BastionSubnetPrefix": "10.33.254.0/24"
 	},
 	"resources": [
 		{

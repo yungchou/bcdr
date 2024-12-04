@@ -392,7 +392,7 @@ In this task, you will build a Windows Failover Cluster and configure SQL Always
     ```Powershell
     $ClusterNetworkName = "Cluster Network 1"
     $IPResourceName = "BCDRAOG_10.95.2.100"
-    $ILBIP = "10.95.2.100"
+    $ILBIP = "10.22.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
@@ -781,7 +781,7 @@ This task comprises the following steps:
     ```Powershell
     $ClusterNetworkName = "Cluster Network 2"
     $IPResourceName = "BCDRAOG_10.102.2.100"
-    $ILBIP = "10.102.2.100"
+    $ILBIP = "10.33.2.100"
     Import-Module FailoverClusters
     Get-ClusterResource $IPResourceName | Set-ClusterParameter -Multiple @{"Address"="$ILBIP";"ProbePort"="59999";"SubnetMask"="255.255.255.255";"Network"="$ClusterNetworkName";"EnableDhcp"=0}
     Stop-ClusterResource -Name $IPResourceName
