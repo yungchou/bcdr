@@ -140,6 +140,12 @@
 						}
 					},
 					{
+						"name": "[variables('avdSubnetName')]",
+						"properties": {
+							"addressPrefix": "[variables('avdSubnetPrefix')]"
+						}
+					},
+					{
 						"name": "[variables('BastionSubnetName')]",
 						"properties": {
 							"addressPrefix": "[variables('BastionSubnetPrefix')]"
@@ -161,6 +167,10 @@
 		"ADSubnetId": {
 			"type": "string",
 			"value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('ADSubnetName'))]"
+		},
+		"avdSubnetId": {
+			"type": "string",
+			"value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('avdSubnetName'))]"
 		},
 		"BastionSubnetId": {
 			"type": "string",
