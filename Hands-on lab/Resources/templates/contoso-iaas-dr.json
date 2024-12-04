@@ -38,7 +38,7 @@
 		},
 		"vnetNamePrimary": {
 			"type": "string", 
-			"defaultValue": "w2-22"
+			"defaultValue": "[concat(resourceGroup().location,'-22')]"
 		},
 		"DNSIPsOfPrimaryVnet": {
 			"type": "array", 
@@ -53,7 +53,7 @@
 		},
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
-			"defaultValue": "w3-33"
+			"defaultValue": "[concat(resourceGroup().location,'-33')]"
 		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",
