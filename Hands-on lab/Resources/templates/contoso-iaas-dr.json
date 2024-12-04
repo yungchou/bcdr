@@ -11,7 +11,7 @@
 		},
 		"vnetNameSecondaryToBeCreated": {
 			"type": "string", 
-			"defaultValue": "[concat(resourceGroup().location,'-33')]"
+			"defaultValue": "secondary/DR vnet name"
 		},
 		"ADVM3PrivateIPAddress":{
 			"type": "string",
@@ -69,7 +69,7 @@
 		},
 		"vnetNamePrimary": {
 			"type": "string", 
-			"defaultValue": "[concat(resourceGroup().location,'-22')]"
+			"defaultValue": "primary/source vnet name"
 		},
 		"DNSIPsOfPrimaryVnet": {
 			"type": "array", 
