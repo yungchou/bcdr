@@ -20,7 +20,7 @@
 				"description": "The name of the administrator account of the new VM and domain"
 			}
 		},
-		"adminPassword": {
+		"adminPASSWORD": {
 			"type": "securestring",
 			"defaultValue": "Demo!pass123",
 			"metadata": {

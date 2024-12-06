@@ -29,6 +29,8 @@
 		"ADSubnetPrefix": "10.33.3.0/24",
 		"avdSubnetName": "AVD",
 		"avdSubnetPrefix": "10.33.4.0/24",
+		"devTestSubnetName": "DevTest",
+		"devTestSubnetPrefix": "10.33.251.0/24",
 		"BastionSubnetName": "AzureBastionSubnet",
 		"BastionSubnetPrefix": "10.33.254.0/24"
 	},
@@ -142,6 +144,12 @@
 						}
 					},
 					{
+						"name": "[variables('devTestSubnetName')]",
+						"properties": {
+							"addressPrefix": "[variables('devTestSubnetPrefix')]"
+						}
+					},
+					{
 						"name": "[variables('BastionSubnetName')]",
 						"properties": {
 							"addressPrefix": "[variables('BastionSubnetPrefix')]"
@@ -167,6 +175,10 @@
 		"avdSubnetId": {
 			"type": "string",
 			"value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('avdSubnetName'))]"
+		},
+		"devTestSubnetId": {
+			"type": "string",
+			"value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VNetName'), variables('devTestSubnetName'))]"
 		},
 		"BastionSubnetId": {
 			"type": "string",
